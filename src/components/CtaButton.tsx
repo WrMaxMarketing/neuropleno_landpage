@@ -16,7 +16,7 @@ const sizeClasses: Record<NonNullable<CtaButtonProps["size"]>, string> = {
 
 const variantClasses: Record<NonNullable<CtaButtonProps["variant"]>, string> = {
   primary: "bg-teal text-white hover:bg-navy-light",
-  secondary: "bg-white text-navy border-2 border-navy hover:bg-cyan-tint",
+  secondary: "bg-white text-navy hover:bg-cyan-tint",
 };
 
 export function CtaButton({
@@ -31,7 +31,7 @@ export function CtaButton({
       href={whatsappLink(message)}
       target="_blank"
       rel="noopener noreferrer"
-      className={`touch-manipulation inline-flex min-h-[48px] items-center justify-center rounded-full font-semibold shadow-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
+      className={`touch-manipulation inline-flex min-h-12 items-center justify-center rounded-full font-semibold shadow-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
     >
       {children}
     </Link>

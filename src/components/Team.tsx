@@ -14,13 +14,13 @@ export function Team() {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {doctors.map((doctor) => (
             <div key={doctor.name} className="text-center">
-              <div className="relative mx-auto mb-4 aspect-square w-40 overflow-hidden rounded-full shadow-md">
+              <div className="relative mx-auto mb-4 aspect-square w-40 overflow-hidden rounded-2xl shadow-md">
                 <Image
                   src={doctor.image}
                   alt={doctor.name}
                   fill
                   sizes="160px"
-                  className="object-cover"
+                  className="object-cover object-top"
                 />
               </div>
               <h3 className="text-lg font-bold text-navy">{doctor.name}</h3>

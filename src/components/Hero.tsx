@@ -26,8 +26,8 @@ export function Hero() {
           <Image
             src={hero.image}
             alt="Clínica Neuropleno"
-            width={700}
-            height={700}
+            width={1400}
+            height={1158}
             className="h-auto w-full rounded-2xl object-cover shadow-xl"
             priority
           />

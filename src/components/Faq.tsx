@@ -18,30 +18,41 @@ function FaqItem({
   const panelId = useId();
 
   return (
-    <div className="border-b border-slate-200">
+    <div className="overflow-hidden rounded-[10px] transition-colors duration-[400ms]">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={panelId}
-        className="flex min-h-[48px] w-full items-center justify-between gap-4 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+        className={`flex min-h-[48px] w-full items-center justify-between gap-4 rounded-[10px] px-6 py-4 text-left transition-colors duration-[400ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 ${
+          isOpen ? "bg-navy text-cyan-tint" : "bg-cyan text-navy hover:bg-teal"
+        }`}
       >
-        <span className="font-semibold text-navy">{question}</span>
+        <span className="font-semibold">{question}</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
           aria-hidden="true"
-          className={`h-5 w-5 shrink-0 text-teal transition-transform ${isOpen ? "rotate-45" : ""}`}
+          className={`h-5 w-5 shrink-0 transition-transform duration-[400ms] ${isOpen ? "rotate-180" : ""}`}
         >
-          <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+          <path
+            fillRule="evenodd"
+            d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.938a.75.75 0 1 1 1.08 1.04l-4.25 4.5a.75.75 0 0 1-1.08 0l-4.25-4.5a.75.75 0 0 1 .02-1.06Z"
+            clipRule="evenodd"
+          />
         </svg>
       </button>
-      {isOpen && (
-        <p id={panelId} className="pb-5 text-slate-600">
-          {answer}
-        </p>
-      )}
+      <div
+        className="grid transition-[grid-template-rows] duration-[400ms] ease-in-out"
+        style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+      >
+        <div className="overflow-hidden">
+          <p id={panelId} className="px-6 pb-5 pt-4 text-slate-600">
+            {answer}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -54,7 +65,7 @@ export function Faq() {
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <SectionHeading eyebrow="Dúvidas" title="Perguntas frequentes" />
 
-        <div>
+        <div className="space-y-3">
           {faq.map((item, index) => (
             <FaqItem
               key={item.question}

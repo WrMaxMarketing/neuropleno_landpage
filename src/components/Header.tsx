@@ -1,15 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { nav, site } from "@/data/content";
 import { CtaButton } from "./CtaButton";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    lastScrollY.current = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrolledDown = currentScrollY > lastScrollY.current;
+
+      if (scrolledDown && currentScrollY > 96) {
+        setHidden(true);
+        setOpen(false);
+      } else {
+        setHidden(false);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/95 backdrop-blur">
+    <header
+      className={`sticky top-0 z-50 border-b border-slate-100 bg-white/95 backdrop-blur transition-transform duration-300 ${hidden ? "-translate-y-full" : "translate-y-0"}`}
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <a href="#home" className="flex items-center gap-2" aria-label={site.name}>
           <Image
@@ -72,7 +97,7 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="min-h-[48px] rounded-md px-2 py-3 text-base font-medium text-slate-700 hover:bg-cyan-tint hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+                className="min-h-12 rounded-md px-2 py-3 text-base font-medium text-slate-700 hover:bg-cyan-tint hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
               >
                 {item.label}
               </a>
