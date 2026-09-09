@@ -18,7 +18,7 @@ export function whatsappLink(customMessage?: string) {
 }
 
 export const nav = [
-  { label: "Home", href: "#home" },
+  { label: "Início", href: "#home" },
   { label: "Procedimentos", href: "#procedimentos" },
   { label: "Como Funciona", href: "#comofunciona" },
   { label: "Equipe", href: "#equipe" },
@@ -78,14 +78,14 @@ export const doctors: Doctor[] = [
     name: "Dr. Davi Said Araújo",
     credentials: "CRM 4898-PI / RQE 3230",
     specialty:
-      "Médico neurologista especialista em doenças cerebrovasculares e mestre em ciências médicas",
+      "Médico neurologista especialista em doenças cerebrovasculares e mestre em ciências médicas.",
     image: "/images/dr-davi-said-araujo.jpg",
   },
   {
     name: "Dr. Frederico Maia Prado",
     credentials: "CRM 4096-PI / RQE 3578/3579",
     specialty:
-      "Médico neurologista e neurofisiologista, mestre em doenças neuromusculares, doutorando e professor de neurologia",
+      "Médico neurologista e neurofisiologista, mestre em doenças neuromusculares, doutorando e professor de neurologia.",
     image: "/images/dr-frederico-maia-prado.jpg",
   },
   {
@@ -98,7 +98,7 @@ export const doctors: Doctor[] = [
   {
     name: "Dr. Marconi Cosme",
     credentials: "CRM-PI 5303 / RQE 3558/3791",
-    specialty: "Médico neurologista especializado em neurofisiologia e eletroneuromiografia",
+    specialty: "Médico neurologista especializado em neurofisiologia e eletroneuromiografia.",
     image: "/images/dr-marconi-cosme.jpg",
   },
 ];
@@ -119,7 +119,6 @@ export const facilityImages = [
   "/images/facility-1.jpg",
   "/images/facility-2.jpg",
   "/images/facility-3.jpg",
-  "/images/facility-team.jpg",
 ];
 
 export const steps = [
