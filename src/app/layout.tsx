@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,16 +13,57 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const title = "Clínica Neuropleno | Neurologia e Neurocirurgia em Teresina";
+const description =
+  "Referência nacional em neurologia e neurocirurgia. Diagnóstico preciso e tratamento humanizado das principais condições neurológicas em Teresina - PI.";
+
 export const metadata: Metadata = {
-  title: "Clínica Neuropleno | Neurologia e Neurocirurgia em Teresina",
-  description:
-    "Referência nacional em neurologia e neurocirurgia. Diagnóstico preciso e tratamento humanizado das principais condições neurológicas em Teresina - PI.",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  keywords: [
+    "neurologista Teresina",
+    "neurocirurgião Teresina",
+    "clínica de neurologia Piauí",
+    "eletroneuromiografia Teresina",
+    "tratamento de AVC",
+    "cefaleia e enxaqueca",
+    "epilepsia",
+    "Doença de Parkinson",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+    },
+  },
   openGraph: {
-    title: "Clínica Neuropleno | Neurologia e Neurocirurgia em Teresina",
-    description:
-      "Referência nacional em neurologia e neurocirurgia. Diagnóstico preciso e tratamento humanizado em Teresina - PI.",
+    title,
+    description,
+    url: siteUrl,
+    siteName: "Clínica Neuropleno",
     locale: "pt_BR",
     type: "website",
+    images: [
+      {
+        url: "/images/facility-1.jpg",
+        width: 1920,
+        height: 1280,
+        alt: "Clínica Neuropleno",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/images/facility-1.jpg"],
   },
 };
 
