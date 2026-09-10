@@ -29,8 +29,9 @@ export const hero = {
   headline: "Referência nacional em neurologia e neurocirurgia, aqui em Teresina",
   subheadline:
     "Diagnóstico preciso e tratamento humanizado das principais condições neurológicas, com tecnologia de ponta e equipe médica especializada.",
-  image: "/images/hero.webp",
 };
+
+export const teamImage = "/images/hero.webp";
 
 export const stats = [
   { label: "Anos de Experiência", value: 10, suffix: "+" },
@@ -112,6 +113,15 @@ export const mediaLogos = [
   { name: "O Globo", image: "/images/media-oglobo.png" },
 ];
 
+export const behindTheScenesVideo = {
+  eyebrow: "Bastidores",
+  title: "Veja um exame de eletroneuromiografia na prática",
+  description:
+    "Registro real de um atendimento na Clínica Neuropleno, mostrando como funciona o exame que avalia a atividade elétrica de nervos e músculos — sem dor, rápido e conduzido por especialistas em neurofisiologia.",
+  video: "/videos/exame-eletroneuromiografia.mp4",
+  poster: "/images/exame-eletroneuromiografia-poster.jpg",
+};
+
 export const facilityText =
   "Trazemos para Teresina-PI diagnósticos precisos, exames de alta complexidade e tratamentos personalizados — tudo com tecnologia de ponta e equipe médica referência nacional. Cuidar da sua saúde neurológica nunca foi tão seguro, moderno e humano.";
 
@@ -119,6 +129,9 @@ export const facilityImages = [
   "/images/facility-1.jpg",
   "/images/facility-2.jpg",
   "/images/facility-3.jpg",
+  "/images/facility-4.jpg",
+  "/images/facility-5.jpg",
+  "/images/facility-6.jpg",
 ];
 
 export const steps = [

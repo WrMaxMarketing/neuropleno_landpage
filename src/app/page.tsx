@@ -4,6 +4,7 @@ import { MediaBar } from "@/components/MediaBar";
 import { Stats } from "@/components/Stats";
 import { Symptoms } from "@/components/Symptoms";
 import { Procedures } from "@/components/Procedures";
+import { VideoShowcase } from "@/components/VideoShowcase";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Features } from "@/components/Features";
 import { Team } from "@/components/Team";
@@ -24,6 +25,7 @@ export default function Home() {
         <Stats />
         <Symptoms />
         <Procedures />
+        <VideoShowcase />
         <HowItWorks />
         <Features />
         <Team />
