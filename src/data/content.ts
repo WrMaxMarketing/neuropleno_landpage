@@ -131,7 +131,6 @@ export const facilityImages = [
   "/images/facility-3.jpg",
   "/images/facility-4.jpg",
   "/images/facility-5.jpg",
-  "/images/facility-6.jpg",
 ];
 
 export const steps = [
