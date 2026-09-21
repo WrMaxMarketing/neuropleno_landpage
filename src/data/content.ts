@@ -1,16 +1,21 @@
 export const site = {
   name: "Clínica Neuropleno",
-  tagline: "Referência Nacional em Neurologia e Neurocirurgia",
+  tagline: "Referência Nacional em Neurologia, Neurocirurgia e Neurorradiologia",
   city: "Teresina - PI",
   address: "R. Gov. Joca Pires, 2020 - Ininga, Teresina - PI - Centro Médico San Vitta",
   hours: "Segunda a Sexta - 08:00 às 18:00",
   whatsapp: "5586988519192",
   whatsappDisplay: "(86) 98851-9192",
   instagram: "https://www.instagram.com/neuroplenoclinica",
+  // Exigido pela Resolução CFM nº 2.336/2023 para publicidade de estabelecimentos assistenciais
+  // em ambiente virtual. Confirme os dados corretos com a clínica antes de publicar — a Footer só
+  // exibe esta linha quando ambos os campos estiverem preenchidos.
+  clinicCrmRegistration: "",
+  technicalDirector: "",
 };
 
 export const whatsappMessage =
-  "Olá! Gostaria de agendar uma consulta de avaliação com a Clínica Neuropleno ou tirar dúvidas";
+  "Olá! Gostaria de agendar uma consulta com a Clínica Neuropleno ou tirar dúvidas";
 
 export function whatsappLink(customMessage?: string) {
   const msg = encodeURIComponent(customMessage ?? whatsappMessage);
@@ -26,9 +31,10 @@ export const nav = [
 ];
 
 export const hero = {
-  headline: "Referência nacional em neurologia e neurocirurgia, aqui em Teresina",
+  headline: "Referência em Neurologia, Neurocirurgia e Neurorradiologia em Teresina",
   subheadline:
-    "Diagnóstico preciso e tratamento humanizado das principais condições neurológicas, com tecnologia de ponta e equipe médica especializada.",
+    "Do diagnóstico ao tratamento clínico, cirúrgico e endovascular de condições neurológicas complexas, com equipe especializada e tecnologia de alta precisão.",
+  specialties: "Neurologia • Neurocirurgia • Neurointervenção • Exames especializados",
 };
 
 export const teamImage = "/images/hero.webp";
@@ -39,32 +45,73 @@ export const stats = [
   { label: "Tratamentos Realizados", value: 5000, suffix: "+" },
 ];
 
+export type SpecialtyKey = "neurologia" | "neurocirurgia" | "neurorradiologia";
+
 export type Procedure = {
   title: string;
   image: string;
+  category: SpecialtyKey;
 };
 
 export const procedures: Procedure[] = [
-  { title: "Cefaleia", image: "/images/proc-cefaleia.jpg" },
-  { title: "Esquecimentos ou Demência", image: "/images/proc-demencia.jpg" },
-  { title: "AVC", image: "/images/proc-avc.jpg" },
-  { title: "Doenças Neurológicas Degenerativas", image: "/images/proc-doencas-degenerativas.jpg" },
-  { title: "Eletroencefalograma", image: "/images/proc-eeg.jpg" },
-  { title: "Polissonografia", image: "/images/proc-polissonografia.jpg" },
-  { title: "Punção Lombar com Coleta de Líquor", image: "/images/proc-puncao-lombar.jpg" },
-  { title: "Aneurisma Cerebral", image: "/images/proc-aneurisma.jpg" },
-  { title: "Angioplastia de Carótida", image: "/images/proc-angioplastia.jpg" },
-  { title: "Angiografia Cerebral", image: "/images/proc-angiografia.jpg" },
-  { title: "Eletroneuromiografia", image: "/images/proc-eletroneuromiografia.jpg" },
-  { title: "Neuropatia Periférica", image: "/images/proc-neuropatia-periferica.jpg" },
-  { title: "Miopatia", image: "/images/proc-miopatia.jpg" },
-  { title: "Descompressão do Trigêmeo", image: "/images/proc-trigemeo.jpg" },
-  { title: "Doença de Parkinson", image: "/images/proc-parkinson.jpg" },
-  { title: "Epilepsia", image: "/images/proc-epilepsia.jpg" },
-  { title: "Cirurgia de Coluna", image: "/images/proc-cirurgia-coluna.jpg" },
-  { title: "Artrodese de Coluna", image: "/images/proc-artrodese.jpg" },
-  { title: "Cirurgia de Tumor Cerebral", image: "/images/proc-tumor-cerebral.jpg" },
-  { title: "Esclerose Múltipla", image: "/images/proc-esclerose-multipla.jpg" },
+  { title: "Cefaleia", image: "/images/proc-cefaleia.jpg", category: "neurologia" },
+  { title: "Esquecimentos ou Demência", image: "/images/proc-demencia.jpg", category: "neurologia" },
+  { title: "AVC", image: "/images/proc-avc.jpg", category: "neurologia" },
+  { title: "Doenças Neurológicas Degenerativas", image: "/images/proc-doencas-degenerativas.jpg", category: "neurologia" },
+  { title: "Eletroencefalograma", image: "/images/proc-eeg.jpg", category: "neurologia" },
+  { title: "Polissonografia", image: "/images/proc-polissonografia.jpg", category: "neurologia" },
+  { title: "Punção Lombar com Coleta de Líquor", image: "/images/proc-puncao-lombar.jpg", category: "neurologia" },
+  { title: "Aneurisma Cerebral", image: "/images/proc-aneurisma.jpg", category: "neurorradiologia" },
+  { title: "Angioplastia de Carótida", image: "/images/proc-angioplastia.jpg", category: "neurorradiologia" },
+  { title: "Angiografia Cerebral", image: "/images/proc-angiografia.jpg", category: "neurorradiologia" },
+  { title: "Eletroneuromiografia", image: "/images/proc-eletroneuromiografia.jpg", category: "neurologia" },
+  { title: "Neuropatia Periférica", image: "/images/proc-neuropatia-periferica.jpg", category: "neurologia" },
+  { title: "Miopatia", image: "/images/proc-miopatia.jpg", category: "neurologia" },
+  { title: "Descompressão do Trigêmeo", image: "/images/proc-trigemeo.jpg", category: "neurocirurgia" },
+  { title: "Doença de Parkinson", image: "/images/proc-parkinson.jpg", category: "neurologia" },
+  { title: "Epilepsia", image: "/images/proc-epilepsia.jpg", category: "neurologia" },
+  { title: "Cirurgia de Coluna", image: "/images/proc-cirurgia-coluna.jpg", category: "neurocirurgia" },
+  { title: "Artrodese de Coluna", image: "/images/proc-artrodese.jpg", category: "neurocirurgia" },
+  { title: "Cirurgia de Tumor Cerebral", image: "/images/proc-tumor-cerebral.jpg", category: "neurocirurgia" },
+  { title: "Esclerose Múltipla", image: "/images/proc-esclerose-multipla.jpg", category: "neurologia" },
+];
+
+export type SpecialtyArea = {
+  key: SpecialtyKey;
+  title: string;
+  description: string;
+  image: string;
+};
+
+export const specialtyAreas: SpecialtyArea[] = [
+  {
+    key: "neurologia",
+    title: "Neurologia",
+    description:
+      "Diagnóstico e tratamento clínico de AVC, Parkinson, epilepsia, demências, cefaleias e outras condições neurológicas.",
+    image: "/images/proc-parkinson.jpg",
+  },
+  {
+    key: "neurocirurgia",
+    title: "Neurocirurgia",
+    description:
+      "Procedimentos cirúrgicos para tumores cerebrais, cirurgia de coluna e descompressão do trigêmeo, com equipe especializada.",
+    image: "/images/proc-tumor-cerebral.jpg",
+  },
+  {
+    key: "neurorradiologia",
+    title: "Neurorradiologia Intervencionista",
+    description:
+      "Tratamentos minimamente invasivos realizados pelos vasos sanguíneos: aneurisma cerebral, angioplastia de carótida, angiografia e tratamento endovascular.",
+    image: "/images/proc-aneurisma.jpg",
+  },
+];
+
+export const authorityPoints = [
+  "Corpo clínico com mestrado, doutorado e docência universitária em neurologia e neurocirurgia.",
+  "Preceptor da residência médica de Neurocirurgia do HGV, formando novos especialistas.",
+  "Especialização em neurorradiologia intervencionista, neurofisiologia clínica e doenças cerebrovasculares.",
+  "Mais de 10 anos de atuação e 20.000+ pacientes atendidos em Teresina - PI.",
 ];
 
 export type Doctor = {
@@ -104,20 +151,32 @@ export const doctors: Doctor[] = [
   },
 ];
 
-export const mediaLogos = [
-  { name: "Terra", image: "/images/media-terra.png" },
-  { name: "Globo", image: "/images/media-globo.png" },
-  { name: "iG", image: "/images/media-ig.png" },
-  { name: "UOL", image: "/images/media-uol.png" },
-  { name: "Valor Econômico", image: "/images/media-valor-economico.png" },
-  { name: "O Globo", image: "/images/media-oglobo.png" },
+export type MediaMention = {
+  name: string;
+  image: string;
+  // Preencha com a matéria real (headline, assunto e link) para cada veículo.
+  // Enquanto vazio, o card exibe apenas a logo, sem link — nunca inventar URL/manchete.
+  headline?: string;
+  topic?: string;
+  url?: string;
+};
+
+// Apenas veículos com matéria real verificada entram nesta lista — sem link real, sem entrada.
+export const mediaLogos: MediaMention[] = [
+  {
+    name: "Terra",
+    image: "/images/media-terra.png",
+    headline: "Check-up neurológico evita complicações e autodiagnóstico",
+    topic: "Neurologistas da Clínica Neuropleno orientam sobre check-up neurológico",
+    url: "https://www.terra.com.br/noticias/check-up-neurologico-evita-complicacoes-e-autodiagnostico,74a16d5ad6e73e2a9d232d936e8a80aaf16efnhi.html",
+  },
 ];
 
 export const behindTheScenesVideo = {
   eyebrow: "Bastidores",
   title: "Veja um exame de eletroneuromiografia na prática",
   description:
-    "Registro real de um atendimento na Clínica Neuropleno, mostrando como funciona o exame que avalia a atividade elétrica de nervos e músculos — sem dor, rápido e conduzido por especialistas em neurofisiologia.",
+    "Registro real de um atendimento na Clínica Neuropleno, mostrando como funciona o exame que avalia a atividade elétrica de nervos e músculos. Exame realizado com cuidado, orientação em todas as etapas e por equipe especializada em neurofisiologia.",
   video: "/videos/exame-eletroneuromiografia.mp4",
   poster: "/images/exame-eletroneuromiografia-poster.jpg",
 };
@@ -137,7 +196,7 @@ export const steps = [
   {
     icon: "/images/step-1.svg",
     title: "Agende Sua Consulta",
-    description: "Agende sua consulta de avaliação pelo nosso WhatsApp com 1 clique",
+    description: "Agende sua consulta pelo nosso WhatsApp com 1 clique",
   },
   {
     icon: "/images/step-2.svg",

@@ -17,7 +17,7 @@ export function getMedicalClinicJsonLd() {
     logo: `${siteUrl}/images/logo-principal.png`,
     telephone: `+${site.whatsapp}`,
     priceRange: "$$",
-    medicalSpecialty: ["Neurology", "Neurosurgery"],
+    medicalSpecialty: ["Neurology", "Neurosurgery", "Radiography"],
     address: {
       "@type": "PostalAddress",
       streetAddress: site.address,

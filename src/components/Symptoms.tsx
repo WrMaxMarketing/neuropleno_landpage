@@ -37,7 +37,7 @@ export function Symptoms() {
         </ul>
 
         <div className="mt-10 text-center">
-          <CtaButton size="lg">Agendar Avaliação</CtaButton>
+          <CtaButton size="lg">Agendar Consulta</CtaButton>
         </div>
       </div>
     </section>

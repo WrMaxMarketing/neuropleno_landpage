@@ -60,7 +60,7 @@ export function Header() {
         </nav>
 
         <div className="hidden md:block">
-          <CtaButton size="md">Agendar Avaliação</CtaButton>
+          <CtaButton size="md">Agendar Consulta</CtaButton>
         </div>
 
         <button
@@ -104,7 +104,7 @@ export function Header() {
             ))}
           </nav>
           <CtaButton size="md" className="mt-3 w-full">
-            Agendar Avaliação
+            Agendar Consulta
           </CtaButton>
         </div>
       )}

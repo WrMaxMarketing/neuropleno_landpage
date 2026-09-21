@@ -13,7 +13,7 @@ export function FinalCta() {
         </p>
         <div className="mt-8">
           <CtaButton size="lg" variant="secondary">
-            Agendar Avaliação
+            Agendar Consulta
           </CtaButton>
         </div>
       </div>

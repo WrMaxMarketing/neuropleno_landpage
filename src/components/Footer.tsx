@@ -63,6 +63,12 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-10 max-w-6xl border-t border-white/10 px-4 pt-6 text-xs text-slate-400 sm:px-6">
+        {site.clinicCrmRegistration && site.technicalDirector && (
+          <p className="mb-2">
+            Registro no CRM: {site.clinicCrmRegistration} · Diretor técnico-médico:{" "}
+            {site.technicalDirector}
+          </p>
+        )}
         © {new Date().getFullYear()} {site.name}. Todos os direitos reservados.
       </div>
     </footer>

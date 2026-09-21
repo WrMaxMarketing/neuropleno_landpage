@@ -5,15 +5,17 @@ import {
 } from "@/lib/structured-data";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { MediaBar } from "@/components/MediaBar";
 import { Stats } from "@/components/Stats";
+import { Authority } from "@/components/Authority";
+import { SpecialtyAreas } from "@/components/SpecialtyAreas";
 import { Symptoms } from "@/components/Symptoms";
+import { Team } from "@/components/Team";
 import { Procedures } from "@/components/Procedures";
+import { Facility } from "@/components/Facility";
+import { MediaBar } from "@/components/MediaBar";
 import { VideoShowcase } from "@/components/VideoShowcase";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Features } from "@/components/Features";
-import { Team } from "@/components/Team";
-import { Facility } from "@/components/Facility";
 import { Payment } from "@/components/Payment";
 import { Faq } from "@/components/Faq";
 import { FinalCta } from "@/components/FinalCta";
@@ -34,15 +36,17 @@ export default function Home() {
       <Header />
       <main id="main-content">
         <Hero />
-        <MediaBar />
         <Stats />
+        <Authority />
+        <SpecialtyAreas />
         <Symptoms />
+        <Team />
         <Procedures />
+        <Facility />
+        <MediaBar />
         <VideoShowcase />
         <HowItWorks />
         <Features />
-        <Team />
-        <Facility />
         <Payment />
         <Faq />
         <FinalCta />

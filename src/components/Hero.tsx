@@ -17,9 +17,19 @@ export function Hero() {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton size="lg" className="w-full sm:w-auto">
-              Agendar Avaliação
+              Agendar Consulta
+            </CtaButton>
+            <CtaButton
+              size="lg"
+              variant="secondary"
+              className="w-full sm:w-auto"
+              message="Olá! Gostaria de falar com a equipe da Clínica Neuropleno."
+            >
+              Falar com nossa equipe
             </CtaButton>
           </div>
+
+          <p className="mt-6 text-sm font-medium text-slate-500">{hero.specialties}</p>
         </div>
 
         <HeroVideo />

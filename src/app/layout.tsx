@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const title = "Clínica Neuropleno | Neurologia e Neurocirurgia em Teresina";
+const title = "Clínica Neuropleno | Neurologia, Neurocirurgia e Neurorradiologia em Teresina";
 const description =
-  "Referência nacional em neurologia e neurocirurgia. Diagnóstico preciso e tratamento humanizado das principais condições neurológicas em Teresina - PI.";
+  "Referência nacional em neurologia, neurocirurgia e neurorradiologia intervencionista. Diagnóstico e tratamento clínico, cirúrgico e endovascular das principais condições neurológicas em Teresina - PI.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

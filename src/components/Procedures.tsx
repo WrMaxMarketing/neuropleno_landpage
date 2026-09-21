@@ -17,7 +17,9 @@ export function Procedures() {
           {procedures.map((procedure) => (
             <Link
               key={procedure.title}
-              href={whatsappLink()}
+              href={whatsappLink(
+                `Olá! Vim pelo site e gostaria de saber mais sobre o tratamento de ${procedure.title}.`,
+              )}
               target="_blank"
               rel="noopener noreferrer"
               className="group overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-shadow hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
