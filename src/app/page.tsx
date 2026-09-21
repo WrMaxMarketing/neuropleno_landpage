@@ -11,6 +11,7 @@ import { About } from "@/components/About";
 import { Team } from "@/components/Team";
 import { Procedures } from "@/components/Procedures";
 import { Facility } from "@/components/Facility";
+import { Testimonials } from "@/components/Testimonials";
 import { MediaBar } from "@/components/MediaBar";
 import { InstagramFeed } from "@/components/InstagramFeed";
 import { Location } from "@/components/Location";
@@ -39,6 +40,7 @@ export default function Home() {
         <Team />
         <Procedures />
         <Facility />
+        <Testimonials />
         <InstagramFeed />
         <Location />
         <Faq />

@@ -240,6 +240,11 @@ export const features = [
 export type Testimonial = {
   name: string;
   quote: string;
+  rating?: number;
+  // Só preencher com o link da avaliação real no perfil da clínica no Google Maps.
+  // Sem origem verificada o card não exibe o selo do Google — nunca atribuir ao
+  // Google um depoimento que não veio de lá.
+  googleUrl?: string;
 };
 
 export const testimonials: Testimonial[] = [
