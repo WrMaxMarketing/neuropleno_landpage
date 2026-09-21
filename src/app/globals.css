@@ -31,3 +31,27 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee 60s linear infinite;
+}
+
+.marquee-pause:hover .marquee-track,
+.marquee-pause:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  .marquee-pause {
+    overflow-x: auto;
+  }
+}

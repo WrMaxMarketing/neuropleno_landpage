@@ -1,6 +1,6 @@
 export const site = {
   name: "Clínica Neuropleno",
-  tagline: "Referência Nacional em Neurologia, Neurocirurgia e Neurorradiologia",
+  tagline: "Referência em Neurologia, Neurocirurgia e Neurorradiologia",
   city: "Teresina - PI",
   address: "R. Gov. Joca Pires, 2020 - Ininga, Teresina - PI - Centro Médico San Vitta",
   hours: "Segunda a Sexta - 08:00 às 18:00",
@@ -25,15 +25,14 @@ export function whatsappLink(customMessage?: string) {
 export const nav = [
   { label: "Início", href: "#home" },
   { label: "Procedimentos", href: "#procedimentos" },
-  { label: "Como Funciona", href: "#comofunciona" },
+  { label: "Sobre", href: "#sobre" },
   { label: "Equipe", href: "#equipe" },
   { label: "Contato", href: "#contato" },
 ];
 
 export const hero = {
   headline: "Referência em Neurologia, Neurocirurgia e Neurorradiologia em Teresina",
-  subheadline:
-    "Do diagnóstico ao tratamento clínico, cirúrgico e endovascular de condições neurológicas complexas, com equipe especializada e tecnologia de alta precisão.",
+    subheadline: "Do diagnóstico ao tratamento clínico, cirúrgico e endovascular de condições neurológicas complexas, com equipe especializada e tecnologia de alta precisão.",
   specialties: "Neurologia • Neurocirurgia • Neurointervenção • Exames especializados",
 };
 
@@ -163,13 +162,12 @@ export type MediaMention = {
 
 // Apenas veículos com matéria real verificada entram nesta lista — sem link real, sem entrada.
 export const mediaLogos: MediaMention[] = [
-  {
-    name: "Terra",
-    image: "/images/media-terra.png",
-    headline: "Check-up neurológico evita complicações e autodiagnóstico",
-    topic: "Neurologistas da Clínica Neuropleno orientam sobre check-up neurológico",
-    url: "https://www.terra.com.br/noticias/check-up-neurologico-evita-complicacoes-e-autodiagnostico,74a16d5ad6e73e2a9d232d936e8a80aaf16efnhi.html",
-  },
+  { name: "Terra", image: "/images/media-terra.png" },
+  { name: "Globo", image: "/images/media-globo.png" },
+  { name: "iG", image: "/images/media-ig.png" },
+  { name: "UOL", image: "/images/media-uol.png" },
+  { name: "Valor Econômico", image: "/images/media-valor-economico.png" },
+  { name: "O Globo", image: "/images/media-oglobo.png" },
 ];
 
 export const behindTheScenesVideo = {
@@ -188,8 +186,6 @@ export const facilityImages = [
   "/images/facility-1.jpg",
   "/images/facility-2.jpg",
   "/images/facility-3.jpg",
-  "/images/facility-4.jpg",
-  "/images/facility-5.jpg",
 ];
 
 export const steps = [
