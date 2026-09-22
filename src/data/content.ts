@@ -2,8 +2,11 @@ export const site = {
   name: "Clínica Neuropleno",
   tagline: "Referência em Neurologia, Neurocirurgia e Neurorradiologia",
   city: "Teresina - PI",
-  address: "R. Gov. Joca Pires, 2020 - Ininga, Teresina - PI - Centro Médico San Vitta",
-  hours: "Segunda a Sexta - 08:00 às 18:00",
+  cityShort: "Teresina-PI",
+  address: "R. Gov. Joca Pires, 2020 — Ininga - Centro Médico San Vitta, Teresina/PI",
+  // Resumo em uma linha (rodapé, llms.txt, seção Sobre). O detalhamento por dia fica em hoursLines.
+  hours: "Segunda a quinta, das 08h às 19h · Sexta, das 08h às 17h",
+  hoursLines: ["Segunda à quinta, das 08h às 19h", "Sexta, das 08h às 17h"],
   whatsapp: "5586988519192",
   whatsappDisplay: "(86) 98851-9192",
   instagram: "https://www.instagram.com/neuroplenoclinica",
@@ -31,8 +34,9 @@ export const nav = [
 ];
 
 export const hero = {
-  headline: "Referência em Neurologia, Neurocirurgia e Neurorradiologia em Teresina",
-    subheadline: "Do diagnóstico ao tratamento clínico, cirúrgico e endovascular de condições neurológicas complexas, com equipe especializada e tecnologia de alta precisão.",
+  headline: "Cuidado neurológico completo em um só lugar",
+  subheadline:
+    "Do diagnóstico preciso ao tratamento clínico, cirúrgico e endovascular, com equipe especializada e tecnologia de ponta.",
   specialties: "Neurologia • Neurocirurgia • Neurointervenção • Exames especializados",
 };
 
@@ -53,25 +57,26 @@ export type Procedure = {
 };
 
 export const procedures: Procedure[] = [
+  // As fotos reais da clínica entram a cada 3 cards: o colorido no meio do
+  // duotone vira ritmo, e não um bloco solto na esteira.
   { title: "Cefaleia", image: "/images/proc-cefaleia.jpg", category: "neurologia" },
   { title: "Esquecimentos ou Demência", image: "/images/proc-demencia.jpg", category: "neurologia" },
-  { title: "AVC", image: "/images/proc-avc.jpg", category: "neurologia" },
-  { title: "Doenças Neurológicas Degenerativas", image: "/images/proc-doencas-degenerativas.jpg", category: "neurologia" },
+  { title: "Eletroneuromiografia", image: "/images/proc-eletroneuromiografia.jpg", category: "neurologia" },
   { title: "Eletroencefalograma", image: "/images/proc-eeg.jpg", category: "neurologia" },
   { title: "Polissonografia", image: "/images/proc-polissonografia.jpg", category: "neurologia" },
-  { title: "Punção Lombar com Coleta de Líquor", image: "/images/proc-puncao-lombar.jpg", category: "neurologia" },
-  { title: "Aneurisma Cerebral", image: "/images/proc-aneurisma.jpg", category: "neurorradiologia" },
-  { title: "Angioplastia de Carótida", image: "/images/proc-angioplastia.jpg", category: "neurorradiologia" },
   { title: "Angiografia Cerebral", image: "/images/proc-angiografia.jpg", category: "neurorradiologia" },
-  { title: "Eletroneuromiografia", image: "/images/proc-eletroneuromiografia.jpg", category: "neurologia" },
+  { title: "Aneurisma Cerebral", image: "/images/proc-aneurisma.jpg", category: "neurorradiologia" },
   { title: "Neuropatia Periférica", image: "/images/proc-neuropatia-periferica.jpg", category: "neurologia" },
-  { title: "Miopatia", image: "/images/proc-miopatia.jpg", category: "neurologia" },
+  { title: "Neurointervenção", image: "/images/proc-neurointervencao.jpg", category: "neurorradiologia" },
   { title: "Descompressão do Trigêmeo", image: "/images/proc-trigemeo.jpg", category: "neurocirurgia" },
   { title: "Doença de Parkinson", image: "/images/proc-parkinson.jpg", category: "neurologia" },
+  { title: "Toxina Botulínica", image: "/images/proc-toxina-botulinica.jpg", category: "neurologia" },
   { title: "Epilepsia", image: "/images/proc-epilepsia.jpg", category: "neurologia" },
+  { title: "Punção Lombar com Coleta de Líquor", image: "/images/proc-puncao-lombar.jpg", category: "neurologia" },
+  { title: "Bloqueio de Nervo Occipital", image: "/images/proc-bloqueio-occipital.jpg", category: "neurologia" },
   { title: "Cirurgia de Coluna", image: "/images/proc-cirurgia-coluna.jpg", category: "neurocirurgia" },
   { title: "Artrodese de Coluna", image: "/images/proc-artrodese.jpg", category: "neurocirurgia" },
-  { title: "Cirurgia de Tumor Cerebral", image: "/images/proc-tumor-cerebral.jpg", category: "neurocirurgia" },
+  { title: "Fibromialgia", image: "/images/proc-fibromialgia.jpg", category: "neurologia" },
   { title: "Esclerose Múltipla", image: "/images/proc-esclerose-multipla.jpg", category: "neurologia" },
 ];
 
@@ -87,21 +92,21 @@ export const specialtyAreas: SpecialtyArea[] = [
     key: "neurologia",
     title: "Neurologia",
     description:
-      "Diagnóstico e tratamento clínico de AVC, Parkinson, epilepsia, demências, cefaleias e outras condições neurológicas.",
+      "Investigação e tratamento de dores de cabeça, enxaqueca, Parkinson, Alzheimer, epilepsia, AVC e outros sintomas neurológicos, com avaliação individualizada e acompanhamento especializado.",
     image: "/images/proc-parkinson.jpg",
   },
   {
     key: "neurocirurgia",
     title: "Neurocirurgia",
     description:
-      "Procedimentos cirúrgicos para tumores cerebrais, cirurgia de coluna e descompressão do trigêmeo, com equipe especializada.",
+      "Tratamento especializado de tumores cerebrais, doenças da coluna, compressões nervosas e outras condições neurocirúrgicas, sempre buscando a melhor estratégia para cada paciente.",
     image: "/images/proc-tumor-cerebral.jpg",
   },
   {
     key: "neurorradiologia",
-    title: "Neurorradiologia Intervencionista",
+    title: "Neurorradiologia",
     description:
-      "Tratamentos minimamente invasivos realizados pelos vasos sanguíneos: aneurisma cerebral, angioplastia de carótida, angiografia e tratamento endovascular.",
+      "Abordagem de aneurismas cerebrais, doenças vasculares, angioplastia de carótida, angiografia e outros procedimentos realizados pelos vasos sanguíneos.",
     image: "/images/proc-aneurisma.jpg",
   },
 ];
@@ -115,38 +120,63 @@ export const authorityPoints = [
 
 export type Doctor = {
   name: string;
-  credentials: string;
-  specialty: string;
+  /** Especialidade + registros (CRM/RQE), exibido logo abaixo do nome. */
+  role: string;
+  /** Até 5 linhas curtas de autoridade/atuação — nunca a lista completa de patologias. */
+  highlights: string[];
+  ctaLabel: string;
   image: string;
 };
 
 export const doctors: Doctor[] = [
   {
     name: "Dr. Davi Said Araújo",
-    credentials: "CRM 4898-PI / RQE 3230",
-    specialty:
-      "Médico neurologista especialista em doenças cerebrovasculares e mestre em ciências médicas.",
+    role: "Neurologista | CRM-PI 4898 | RQE 3230",
+    highlights: [
+      "Neurologista com atuação em doenças cerebrovasculares e condições neurológicas",
+      "Diagnóstico e acompanhamento de AVC e outras doenças neurológicas",
+      "Atuação em cefaleias, enxaqueca, Alzheimer, Parkinson e epilepsia",
+      "Também acompanha neuropatias, miastenia e distúrbios do sono",
+    ],
+    ctaLabel: "Quero agendar minha consulta",
     image: "/images/dr-davi-said-araujo.jpg",
   },
   {
+    name: "Dr. Marconi Cosme Soares de Oliveira Filho",
+    role: "Neurologista e Neurofisiologista Clínico | CRM-PI 5303 | RQE 3558 / 3791",
+    highlights: [
+      "Especialista em Neurologia e Neurofisiologia Clínica",
+      "Atuação com foco em doenças neuromusculares e neuropatias",
+      "Realiza eletroneuromiografia e punção lombar",
+      "Investiga formigamentos, fraqueza, túnel do carpo, radiculopatias e outras alterações neurológicas",
+    ],
+    ctaLabel: "Quero agendar minha consulta",
+    image: "/images/dr-marconi-cosme.jpg",
+  },
+  {
     name: "Dr. Frederico Maia Prado",
-    credentials: "CRM 4096-PI / RQE 3578/3579",
-    specialty:
-      "Médico neurologista e neurofisiologista, mestre em doenças neuromusculares, doutorando e professor de neurologia.",
+    role: "Neurologista e Neurofisiologista Clínico | CRM-PI 4096 | RQE 3578",
+    highlights: [
+      "Neurologista e Neurofisiologista Clínico pela Universidade Federal Fluminense – UFF",
+      "Mestre em Neurologia com ênfase em doenças neuromusculares pela UFF",
+      "Doutorando pela UFPI e Professor de Medicina na UNICET",
+      "Realiza consultas, eletroneuromiografia e bloqueios de nervos periféricos",
+    ],
+    ctaLabel: "Quero agendar minha consulta",
     image: "/images/dr-frederico-maia-prado.jpg",
   },
   {
     name: "Dr. Romilto Pacheco",
-    credentials: "CRM-PI 5160 / RQE 4472/5512",
-    specialty:
-      "Médico neurocirurgião pós-graduado em radiologia e neurorradiologia intervencionista, mestre em ciências das imagens. Preceptor da residência de Neurocirurgia do HGV.",
+    role: "Neurocirurgião e Neurorradiologista Intervencionista | CRM-PI 5160 | RQE 4472 / 5512",
+    highlights: [
+      "Neurocirurgião formado pelo HCFMRP-USP",
+      "Especialização em Radiologia e Neurorradiologia Intervencionista pelo HCFMRP-USP",
+      "Mestre em Ciências das Imagens e Preceptor da Neurocirurgia do HGV",
+      "Doutorando em Neurologia e Neurociências - USP",
+      "Atuação em AVC, aneurismas, tumores, doenças da coluna e tratamentos por cirurgia ou cateter",
+    ],
+    ctaLabel: "Quero agendar minha avaliação",
     image: "/images/dr-romilto-pacheco.jpg",
-  },
-  {
-    name: "Dr. Marconi Cosme",
-    credentials: "CRM-PI 5303 / RQE 3558/3791",
-    specialty: "Médico neurologista especializado em neurofisiologia e eletroneuromiografia.",
-    image: "/images/dr-marconi-cosme.jpg",
   },
 ];
 
@@ -280,29 +310,33 @@ export type FaqItem = {
 
 export const faq: FaqItem[] = [
   {
-    question:
-      "Quais são os principais sintomas que indicam a necessidade de procurar um neurologista?",
+    question: "Quais especialidades são atendidas na Neuropleno?",
     answer:
-      "Alterações neurológicas podem se manifestar de várias formas, muitas vezes de maneira sutil. Alguns dos sinais mais comuns que indicam a necessidade de avaliação com um neurologista incluem: dores de cabeça frequentes ou intensas, crises convulsivas, tremores, perda de força ou sensibilidade em braços ou pernas, esquecimentos fora do comum, tonturas recorrentes, dificuldades de equilíbrio, alterações na fala ou na visão, formigamentos persistentes e distúrbios do sono. Se você ou alguém próximo apresenta algum desses sintomas, o ideal é agendar uma consulta para investigação detalhada e, se necessário, iniciar o tratamento adequado o quanto antes.",
+      "A clínica conta com atendimento em Neurologia, Neurocirurgia e Neurorradiologia, com profissionais especializados em diferentes áreas da saúde neurológica.",
   },
   {
-    question: "O que é a eletroneuromiografia?",
+    question: "Quais exames e procedimentos são realizados na clínica?",
     answer:
-      "A eletroneuromiografia é um exame que avalia a atividade elétrica dos nervos e músculos. Ele é indicado para diagnosticar doenças como neuropatias periféricas, síndrome do túnel do carpo, miopatias, compressões nervosas e outras alterações neuromusculares. O exame ajuda o neurologista a entender se os sintomas de dormência, formigamento, dor ou fraqueza muscular estão relacionados a problemas nos nervos ou nos músculos. Na Neuropleno, o exame é realizado por especialistas em neurofisiologia, com equipamentos de alta precisão e cuidado em cada etapa do processo.",
+      "A Neuropleno realiza exames e procedimentos como eletroneuromiografia, punção lombar e bloqueios de nervos periféricos, conforme indicação médica.",
   },
   {
-    question: "Como funciona o atendimento para pacientes com AVC ou histórico familiar?",
+    question: "Quais sintomas indicam que devo procurar um neurologista?",
     answer:
-      "Na Neuropleno, oferecemos um atendimento completo e individualizado para pacientes que sofreram um AVC ou que possuem histórico familiar da doença. Nosso foco está tanto na prevenção, por meio da identificação e controle de fatores de risco (como pressão alta, diabetes e alterações vasculares), quanto no acompanhamento pós-AVC, com avaliação neurológica contínua e estratégias para evitar novos eventos. Pacientes com histórico familiar de AVC também podem realizar exames específicos, como angiografia cerebral ou ultrassonografia de carótidas, além de consultas para análise do risco neurológico.",
+      "Dores de cabeça frequentes, formigamentos, perda de força, tremores, alterações de memória, crises convulsivas, tonturas e outros sintomas neurológicos merecem avaliação especializada.",
   },
   {
-    question: "É possível tratar enxaqueca e dores de cabeça crônicas com neurologista?",
+    question: "Quanto tempo dura a consulta?",
     answer:
-      "Sim. O neurologista é o especialista mais indicado para investigar e tratar enxaquecas e outros tipos de dores de cabeça crônicas. Muitas vezes, esses quadros têm causas neurológicas que precisam ser avaliadas com atenção. Na Neuropleno, o tratamento é feito com base em um plano personalizado, que pode incluir medicações preventivas, ajustes no estilo de vida, controle de gatilhos e, em alguns casos, exames complementares para descartar outras causas. O objetivo é reduzir a frequência, a intensidade das crises e melhorar a qualidade de vida do paciente.",
+      "O tempo pode variar conforme cada caso, pois a consulta é direcionada à avaliação cuidadosa dos sintomas, histórico clínico e exames do paciente.",
   },
   {
-    question: "Como funciona o acompanhamento neurológico em casos de doenças degenerativas?",
+    question: "Como funciona o retorno após a consulta?",
     answer:
-      "O acompanhamento neurológico em casos de doenças degenerativas, como Esclerose Múltipla ou ELA, é fundamental para preservar a qualidade de vida do paciente e retardar a progressão dos sintomas. Na Neuropleno, o cuidado é contínuo, individualizado e realizado por especialistas em neurologia clínica e neurofisiologia. O processo envolve avaliações periódicas, exames específicos, controle de sintomas motores e cognitivos, além de orientações sobre medicamentos, terapias complementares e suporte familiar. Nosso foco é oferecer segurança, funcionalidade e bem-estar ao longo de todas as fases da doença, com planos de cuidado ajustados às necessidades de cada paciente.",
+      "O retorno segue as orientações e o prazo estabelecidos pelo médico de acordo com a necessidade de cada paciente.",
+  },
+  {
+    question: "Como faço para agendar uma consulta ou exame?",
+    answer:
+      "O agendamento pode ser realizado pelo WhatsApp da clínica. A equipe orienta sobre o profissional mais adequado, horários disponíveis e documentos necessários.",
   },
 ];

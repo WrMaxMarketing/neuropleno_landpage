@@ -6,7 +6,7 @@ import { doctors } from "@/data/content";
 import { CtaButton } from "./CtaButton";
 import { SectionHeading } from "./SectionHeading";
 
-const AUTOPLAY_MS = 3000;
+const AUTOPLAY_MS = 9000;
 const LAST = doctors.length - 1;
 // Clones nas pontas ([último, ...médicos, primeiro]) para o carrossel dar a volta nos dois sentidos.
 const slides = [doctors[LAST], ...doctors, doctors[0]];
@@ -14,21 +14,38 @@ const slides = [doctors[LAST], ...doctors, doctors[0]];
 export function Team() {
   const [index, setIndex] = useState(1);
   const [animate, setAnimate] = useState(true);
-  const [paused, setPaused] = useState(false);
+  // Pausas independentes: o fim de um arraste não pode apagar a pausa do teclado.
+  const [focused, setFocused] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [inView, setInView] = useState(false);
   const [drag, setDrag] = useState(0);
 
+  const section = useRef<HTMLElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const dragStart = useRef<number | null>(null);
   const dragged = useRef(false);
 
+  // O relógio do autoplay só corre com o carrossel na tela. Sem isso o ciclo começa
+  // no carregamento da página e o visitante chega no meio de uma transição.
   useEffect(() => {
-    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const el = section.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      threshold: 0.3,
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!inView || focused || dragging) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const id = setInterval(() => {
       setAnimate(true);
       setIndex((current) => current + 1);
     }, AUTOPLAY_MS);
     return () => clearInterval(id);
-  }, [paused]);
+  }, [inView, focused, dragging]);
 
   // Reativa a animação no frame seguinte ao salto silencioso entre clone e slide real.
   useEffect(() => {
@@ -37,7 +54,10 @@ export function Team() {
     return () => cancelAnimationFrame(frame);
   }, [animate]);
 
-  function handleTransitionEnd() {
+  function handleTransitionEnd(event: React.TransitionEvent<HTMLUListElement>) {
+    // transitionend borbulha: só o transform da própria trilha fecha o ciclo do clone.
+    if (event.target !== event.currentTarget || event.propertyName !== "transform") return;
+
     if (index > LAST + 1) {
       setAnimate(false);
       setIndex(1);
@@ -51,7 +71,7 @@ export function Team() {
     if (event.pointerType === "mouse" && event.button !== 0) return;
     dragStart.current = event.clientX;
     dragged.current = false;
-    setPaused(true);
+    setDragging(true);
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
@@ -73,25 +93,23 @@ export function Team() {
 
     dragStart.current = null;
     setDrag(0);
-    setPaused(false);
+    setDragging(false);
   }
 
   const active = (index - 1 + doctors.length) % doctors.length;
 
   return (
-    <section id="equipe" className="scroll-mt-20 bg-white py-16">
+    <section ref={section} id="equipe" className="scroll-mt-20 bg-white py-16">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Nossa equipe"
           title="Médicos especialistas em neurologia e neurocirurgia"
         />
 
-        <div
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onFocus={() => setPaused(true)}
-          onBlur={() => setPaused(false)}
-        >
+        {/* Sem pausa no hover: o carrossel ocupa a largura da seção e o cursor para
+            em cima dele ao rolar a página, o que congelava o autoplay. A pausa no
+            foco continua, para quem navega pelo teclado conseguir ler o card. */}
+        <div onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}>
           <div
             ref={viewport}
             className="cursor-grab touch-pan-y overflow-hidden rounded-3xl active:cursor-grabbing"
@@ -121,15 +139,25 @@ export function Team() {
                   className="grid w-full shrink-0 grid-cols-1 bg-navy text-white sm:grid-cols-[1fr_1fr]"
                 >
                   <div className="flex flex-col justify-center p-8 sm:p-10">
-                    <h3 className="text-2xl font-bold">{doctor.name}</h3>
-                    <p className="mt-1 text-sm font-medium text-cyan">{doctor.credentials}</p>
-                    <p className="mt-4 text-sm leading-relaxed text-white/90">{doctor.specialty}</p>
+                    <h3 className="text-balance text-2xl font-bold">{doctor.name}</h3>
+                    <p className="mt-2 text-sm font-semibold text-cyan">{doctor.role}</p>
+                    <ul className="mt-5 space-y-2.5 text-sm leading-relaxed text-white/90">
+                      {doctor.highlights.map((highlight) => (
+                        <li key={highlight} className="flex gap-2.5">
+                          <span
+                            className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan"
+                            aria-hidden="true"
+                          />
+                          <span>{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
                     <div className="mt-6">
                       <CtaButton
                         variant="secondary"
                         message={`Olá! Gostaria de agendar uma consulta com ${doctor.name}.`}
                       >
-                        Quero agendar agora
+                        {doctor.ctaLabel}
                       </CtaButton>
                     </div>
                   </div>

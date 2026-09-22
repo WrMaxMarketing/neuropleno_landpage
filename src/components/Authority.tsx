@@ -4,26 +4,30 @@ import { SectionHeading } from "./SectionHeading";
 const areas = [
   {
     title: "Neurologia",
+    highlight: "Entenda o que está acontecendo com seu corpo e volte a viver com mais segurança.",
     description:
-      "Diagnóstico e tratamento clínico de AVC, Parkinson, epilepsia, demências, cefaleias e outras condições neurológicas.",
+      "Investigação e tratamento de dores de cabeça, enxaqueca, Parkinson, Alzheimer, epilepsia, AVC e outros sintomas neurológicos, com avaliação individualizada e acompanhamento especializado.",
     position: "sm:col-start-1 sm:row-start-1",
   },
   {
     title: "Neurocirurgia",
+    highlight: "Quando a cirurgia é necessária, precisão e experiência fazem diferença.",
     description:
-      "Cirurgias de tumor cerebral, coluna e descompressão do trigêmeo, com equipe especializada.",
+      "Tratamento especializado de tumores cerebrais, doenças da coluna, compressões nervosas e outras condições neurocirúrgicas, sempre buscando a melhor estratégia para cada paciente.",
     position: "sm:col-start-2 sm:row-start-1",
   },
   {
     title: "Neurorradiologia",
+    highlight: "Tratamentos modernos por cateter, com alta precisão e menor invasividade.",
     description:
-      "Tratamentos minimamente invasivos pelos vasos: aneurisma cerebral, angioplastia de carótida e angiografia.",
+      "Abordagem de aneurismas cerebrais, doenças vasculares, angioplastia de carótida, angiografia e outros procedimentos realizados pelos vasos sanguíneos.",
     position: "sm:col-start-1 sm:row-start-2",
   },
   {
     title: "Avaliação clínica e acompanhamento",
+    highlight: "Não conviva com sintomas sem entender a causa.",
     description:
-      "Consulta aprofundada para entender sintomas, definir o diagnóstico e acompanhar a evolução do tratamento.",
+      "Uma consulta humanizada e detalhada para investigar seus sintomas, definir o diagnóstico e construir o tratamento mais adequado para você, com acompanhamento em cada etapa.",
     position: "sm:col-start-2 sm:row-start-2",
   },
 ];
@@ -74,7 +78,8 @@ export function Authority() {
               key={area.title}
               className={`flex flex-col items-start rounded-2xl border border-teal/30 bg-white p-6 shadow-sm ${area.position}`}
             >
-              <h3 className="text-xl font-bold text-navy">{area.title}</h3>
+              <h3 className="text-balance text-xl font-bold text-navy">{area.title}</h3>
+              <p className="mt-2 text-balance text-sm font-semibold text-teal">{area.highlight}</p>
               <p className="mt-2 mb-4 text-sm text-slate-600">{area.description}</p>
               <CtaButton
                 size="md"

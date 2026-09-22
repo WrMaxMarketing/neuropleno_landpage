@@ -23,7 +23,7 @@ export function GET() {
 
   lines.push("## Equipe médica");
   for (const doctor of doctors) {
-    lines.push(`- **${doctor.name}** (${doctor.credentials}) — ${doctor.specialty}`);
+    lines.push(`- **${doctor.name}** — ${doctor.role}. ${doctor.highlights.join(". ")}.`);
   }
   lines.push("");
 

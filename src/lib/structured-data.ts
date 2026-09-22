@@ -25,17 +25,25 @@ export function getMedicalClinicJsonLd() {
       addressRegion: region,
       addressCountry: "BR",
     },
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "08:00",
-      closes: "18:00",
-    },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+        opens: "08:00",
+        closes: "19:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Friday"],
+        opens: "08:00",
+        closes: "17:00",
+      },
+    ],
     sameAs: [site.instagram],
     employee: doctors.map((doctor) => ({
       "@type": "Physician",
       name: doctor.name,
-      description: doctor.specialty,
+      description: `${doctor.role}. ${doctor.highlights.join(". ")}.`,
     })),
   };
 }
