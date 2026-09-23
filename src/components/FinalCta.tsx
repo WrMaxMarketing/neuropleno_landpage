@@ -5,15 +5,15 @@ export function FinalCta() {
     <section className="bg-teal py-16">
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
         <h2 className="text-balance text-3xl font-bold text-white sm:text-4xl">
-          Agende agora a sua avaliação neurológica
+          Seus sintomas merecem uma avaliação especializada
         </h2>
-        <p className="mt-4 text-lg text-white/90">
-          Agende sua avaliação com a equipe da Neuropleno e tenha o diagnóstico certo para o
-          tratamento certo.
+        <p className="mt-4 text-pretty text-lg text-white/90">
+          Na Neuropleno, você encontra uma equipe preparada para investigar, diagnosticar e indicar
+          o cuidado mais adequado para cada caso.
         </p>
         <div className="mt-8">
           <CtaButton size="lg" variant="secondary">
-            Agendar Consulta
+            Quero agendar uma avaliação
           </CtaButton>
         </div>
       </div>

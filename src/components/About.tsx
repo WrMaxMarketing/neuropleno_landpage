@@ -5,7 +5,7 @@ import { CtaButton } from "./CtaButton";
 const highlights = [
   "Consultas com o tempo necessário para ouvir o paciente e traçar a melhor estratégia de tratamento.",
   "Exames de alta complexidade e tecnologia de ponta reunidos em um só lugar.",
-  `Atendimento em ${site.cityShort} — ${site.hours}.`,
+  `Atendimento em ${site.cityShort}. ${site.hours}.`,
 ];
 
 export function About() {

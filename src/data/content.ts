@@ -3,10 +3,10 @@ export const site = {
   tagline: "Referência em Neurologia, Neurocirurgia e Neurorradiologia",
   city: "Teresina - PI",
   cityShort: "Teresina-PI",
-  address: "R. Gov. Joca Pires, 2020 — Ininga - Centro Médico San Vitta, Teresina/PI",
+  address: "R. Gov. Joca Pires, 2020, Ininga, Centro Médico San Vitta, Teresina/PI",
   // Resumo em uma linha (rodapé, llms.txt, seção Sobre). O detalhamento por dia fica em hoursLines.
   hours: "Segunda a quinta, das 08h às 19h · Sexta, das 08h às 17h",
-  hoursLines: ["Segunda à quinta, das 08h às 19h", "Sexta, das 08h às 17h"],
+  hoursLines: ["Segunda a quinta, das 08h às 19h", "Sexta, das 08h às 17h"],
   whatsapp: "5586988519192",
   whatsappDisplay: "(86) 98851-9192",
   instagram: "https://www.instagram.com/neuroplenoclinica",
@@ -18,7 +18,7 @@ export const site = {
 };
 
 export const whatsappMessage =
-  "Olá! Gostaria de agendar uma consulta com a Clínica Neuropleno ou tirar dúvidas";
+  "Olá! Gostaria de agendar uma consulta com a Clínica Neuropleno ou tirar dúvidas.";
 
 export function whatsappLink(customMessage?: string) {
   const msg = encodeURIComponent(customMessage ?? whatsappMessage);
@@ -57,27 +57,37 @@ export type Procedure = {
 };
 
 export const procedures: Procedure[] = [
-  // As fotos reais da clínica entram a cada 3 cards: o colorido no meio do
-  // duotone vira ritmo, e não um bloco solto na esteira.
+  // A esteira segue a jornada do paciente: consultas, exames, procedimentos e cirurgias.
+  // Manter os cards agrupados nessa ordem — é ela que dá sentido à sequência para quem assiste.
+
+  // Consultas
   { title: "Cefaleia", image: "/images/proc-cefaleia.jpg", category: "neurologia" },
   { title: "Esquecimentos ou Demência", image: "/images/proc-demencia.jpg", category: "neurologia" },
+  { title: "Doença de Parkinson", image: "/images/proc-parkinson.jpg", category: "neurologia" },
+  { title: "Epilepsia", image: "/images/proc-epilepsia.jpg", category: "neurologia" },
+  { title: "Autismo", image: "/images/proc-autismo.jpg", category: "neurologia" },
+  { title: "TDAH", image: "/images/proc-tdah.jpg", category: "neurologia" },
+  { title: "Esclerose Múltipla", image: "/images/proc-esclerose-multipla.jpg", category: "neurologia" },
+  { title: "Neuropatia Periférica", image: "/images/proc-neuropatia-periferica.jpg", category: "neurologia" },
+  { title: "Fibromialgia", image: "/images/proc-fibromialgia.jpg", category: "neurologia" },
+
+  // Exames
   { title: "Eletroneuromiografia", image: "/images/proc-eletroneuromiografia.jpg", category: "neurologia" },
   { title: "Eletroencefalograma", image: "/images/proc-eeg.jpg", category: "neurologia" },
   { title: "Polissonografia", image: "/images/proc-polissonografia.jpg", category: "neurologia" },
   { title: "Angiografia Cerebral", image: "/images/proc-angiografia.jpg", category: "neurorradiologia" },
-  { title: "Aneurisma Cerebral", image: "/images/proc-aneurisma.jpg", category: "neurorradiologia" },
-  { title: "Neuropatia Periférica", image: "/images/proc-neuropatia-periferica.jpg", category: "neurologia" },
-  { title: "Neurointervenção", image: "/images/proc-neurointervencao.jpg", category: "neurorradiologia" },
-  { title: "Descompressão do Trigêmeo", image: "/images/proc-trigemeo.jpg", category: "neurocirurgia" },
-  { title: "Doença de Parkinson", image: "/images/proc-parkinson.jpg", category: "neurologia" },
-  { title: "Toxina Botulínica", image: "/images/proc-toxina-botulinica.jpg", category: "neurologia" },
-  { title: "Epilepsia", image: "/images/proc-epilepsia.jpg", category: "neurologia" },
+
+  // Procedimentos
   { title: "Punção Lombar com Coleta de Líquor", image: "/images/proc-puncao-lombar.jpg", category: "neurologia" },
   { title: "Bloqueio de Nervo Occipital", image: "/images/proc-bloqueio-occipital.jpg", category: "neurologia" },
+  { title: "Toxina Botulínica", image: "/images/proc-toxina-botulinica.jpg", category: "neurologia" },
+  { title: "Aneurisma Cerebral", image: "/images/proc-aneurisma.jpg", category: "neurorradiologia" },
+  { title: "Neurointervenção", image: "/images/proc-neurointervencao.jpg", category: "neurorradiologia" },
+
+  // Cirurgias
   { title: "Cirurgia de Coluna", image: "/images/proc-cirurgia-coluna.jpg", category: "neurocirurgia" },
   { title: "Artrodese de Coluna", image: "/images/proc-artrodese.jpg", category: "neurocirurgia" },
-  { title: "Fibromialgia", image: "/images/proc-fibromialgia.jpg", category: "neurologia" },
-  { title: "Esclerose Múltipla", image: "/images/proc-esclerose-multipla.jpg", category: "neurologia" },
+  { title: "Descompressão do Trigêmeo", image: "/images/proc-trigemeo.jpg", category: "neurocirurgia" },
 ];
 
 export type SpecialtyArea = {
@@ -157,7 +167,7 @@ export const doctors: Doctor[] = [
     name: "Dr. Frederico Maia Prado",
     role: "Neurologista e Neurofisiologista Clínico | CRM-PI 4096 | RQE 3578",
     highlights: [
-      "Neurologista e Neurofisiologista Clínico pela Universidade Federal Fluminense – UFF",
+      "Neurologista e Neurofisiologista Clínico pela Universidade Federal Fluminense (UFF)",
       "Mestre em Neurologia com ênfase em doenças neuromusculares pela UFF",
       "Doutorando pela UFPI e Professor de Medicina na UNICET",
       "Realiza consultas, eletroneuromiografia e bloqueios de nervos periféricos",
@@ -204,14 +214,17 @@ export const behindTheScenesVideo = {
   eyebrow: "Bastidores",
   title: "Veja um exame de eletroneuromiografia na prática",
   description:
-    "Registro real de um atendimento na Clínica Neuropleno, mostrando como funciona o exame que avalia a atividade elétrica de nervos e músculos. Exame realizado com cuidado, orientação em todas as etapas e por equipe especializada em neurofisiologia.",
+    "Registro real de um atendimento na Clínica Neuropleno, mostrando como funciona o exame que avalia a atividade elétrica de nervos e músculos. Exame realizado por equipe especializada em neurofisiologia, com cuidado e orientação em todas as etapas.",
   video: "/videos/exame-eletroneuromiografia.mp4",
   poster: "/images/exame-eletroneuromiografia-poster.jpg",
 };
 
 export const facilityText =
-  "Trazemos para Teresina-PI diagnósticos precisos, exames de alta complexidade e tratamentos personalizados — tudo com tecnologia de ponta e equipe médica referência nacional. Cuidar da sua saúde neurológica nunca foi tão seguro, moderno e humano.";
+  "Trazemos para Teresina-PI diagnósticos precisos, exames de alta complexidade e tratamentos personalizados, tudo com tecnologia de ponta e equipe médica de referência nacional. Cuidar da sua saúde neurológica nunca foi tão seguro, moderno e humano.";
 
+// Só o espaço físico entra aqui: fachada, recepção, espera, salas. Foto com médico
+// em primeiro plano é conteúdo da Equipe, não da Estrutura — facility-4, 5 e 6 são
+// os médicos em procedimento e por isso ficam fora desta lista.
 export const facilityImages = [
   "/images/facility-1.jpg",
   "/images/facility-2.jpg",
@@ -222,7 +235,7 @@ export const steps = [
   {
     icon: "/images/step-1.svg",
     title: "Agende Sua Consulta",
-    description: "Agende sua consulta pelo nosso WhatsApp com 1 clique",
+    description: "Agende sua consulta pelo nosso WhatsApp com um clique",
   },
   {
     icon: "/images/step-2.svg",
@@ -232,24 +245,24 @@ export const steps = [
   {
     icon: "/images/step-3.svg",
     title: "Realize Seus Exames e Tratamento",
-    description: "Seja clínico ou cirúrgico, aqui você tem acesso ao plano",
+    description: "Seja clínico ou cirúrgico, aqui você tem acesso ao plano completo",
   },
   {
     icon: "/images/step-4.svg",
     title: "Recupere Sua Qualidade de Vida",
-    description: "Com diagnóstico certo e abordagem correta",
+    description: "Com o diagnóstico certo e a abordagem correta",
   },
 ];
 
 export const symptoms = [
-  "Dormência e Formigamento",
-  "Esquecimentos e Confusão Mental",
+  "Dormência e formigamento",
+  "Esquecimentos e confusão mental",
   "Dores de cabeça frequentes",
-  "Tremores, Fraqueza ou Dificuldade para segurar objetos",
+  "Tremores, fraqueza ou dificuldade para segurar objetos",
   "Dores cervicais ou lombares intensas",
-  "Alterações de fala ou compreensão",
-  "Tonturas, Perda de visão súbita ou Paralisias",
-  "Convulsões e Desmaios",
+  "Alterações na fala ou na compreensão",
+  "Tonturas, perda de visão súbita ou paralisias",
+  "Convulsões e desmaios",
 ];
 
 export const features = [
@@ -277,26 +290,50 @@ export type Testimonial = {
   googleUrl?: string;
 };
 
+// Perfil real da clínica no Google Meu Negócio. O ftid (0x...:0x...) é o
+// identificador do estabelecimento; ",1," abre a lista de avaliações e ",3," o
+// formulário de quem vai avaliar.
+const GOOGLE_FTID = "0x78e3900166e35df:0xdf1f22a8adfe7098";
+const GOOGLE_SEARCH = "https://www.google.com/search?q=Cl%C3%ADnica+NeuroPleno+Teresina";
+
+export const googleBusiness = {
+  rating: 4.9,
+  reviewCount: 64,
+  profileUrl: "https://www.google.com/maps?cid=16077607302604943512",
+  reviewsUrl: `${GOOGLE_SEARCH}#lrd=${GOOGLE_FTID},1,,,,`,
+  writeReviewUrl: `${GOOGLE_SEARCH}#lrd=${GOOGLE_FTID},3,,,,`,
+};
+
+// Avaliações reais publicadas no perfil do Google da clínica, transcritas em
+// 23/09/2026. Conferidas uma a uma — nenhuma frase aqui é escrita por nós.
 export const testimonials: Testimonial[] = [
   {
-    name: "Marcia O.",
+    name: "Sandra Santos",
+    rating: 5,
     quote:
-      "Quando descobri que tinha um aneurisma, fiquei em choque. Mas a equipe da Neuropleno me acolheu desde o primeiro atendimento. A embolização foi um sucesso e hoje sigo minha vida com mais tranquilidade.",
+      "Foi excelente. Médico Dr. Frederico atencioso, cuidadoso, minucioso com todos os detalhes. Realmente passou total confiança. As atendentes super educadas e atenciosas.",
+    googleUrl: googleBusiness.reviewsUrl,
   },
   {
-    name: "Marcela G.",
+    name: "Marcia Cristina Gomes",
+    rating: 5,
     quote:
-      "Convivi com enxaquecas por anos e achava que era normal. Na consulta com o Dr. entendi que tinha uma cefaleia crônica e comecei um tratamento que mudou completamente minha rotina. Hoje, voltei a trabalhar com muito mais qualidade de vida.",
+      "Lugar que se preocupa e se compromete com o atendimento em excelência. Profissionais capacitados, tratando os pacientes bem como os acompanhantes de forma humanitária.",
+    googleUrl: googleBusiness.reviewsUrl,
   },
   {
-    name: "Francisco R.",
+    name: "Ludmila Lopes de A. Miranda",
+    rating: 5,
     quote:
-      "Meu pai teve um AVC e depois que ele começou o acompanhamento com a equipe da Neuropleno, vimos uma diferença enorme. O cuidado vai muito além do atendimento: é humano, atento e sempre baseado no que ele realmente precisa. Hoje ele está recuperando movimentos, a fala e, principalmente, a confiança.",
+      "Serviço de excelência, com excelente estrutura física e quadro clínico! Dr. Marconi é muito atencioso e preparado no que faz!",
+    googleUrl: googleBusiness.reviewsUrl,
   },
   {
-    name: "Ronaldo F.",
+    name: "Valduleide Cavalcante Costa",
+    rating: 5,
     quote:
-      "Senti dormência nas pernas por meses até que fui diagnosticado com neuropatia. Fiz a eletroneuromiografia na própria clínica e fui tratado com muito cuidado por toda a equipe.",
+      "Gostei muito do atendimento, prático e rápido no agendamento de exames pelo WhatsApp e consulta no horário marcado.",
+    googleUrl: googleBusiness.reviewsUrl,
   },
 ];
 

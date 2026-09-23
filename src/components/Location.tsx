@@ -2,8 +2,7 @@ import { site, whatsappLink } from "@/data/content";
 import { SectionHeading } from "./SectionHeading";
 
 export function Location() {
-  // O endereço exibido usa travessão; o Maps resolve melhor com separadores simples.
-  const query = encodeURIComponent(`${site.name}, ${site.address}`.replace(/\s*—\s*/g, ", "));
+  const query = encodeURIComponent(`${site.name}, ${site.address}`);
 
   return (
     <section id="localizacao" className="scroll-mt-20 bg-cyan-tint py-16">

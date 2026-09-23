@@ -11,6 +11,32 @@ const LAST = doctors.length - 1;
 // Clones nas pontas ([último, ...médicos, primeiro]) para o carrossel dar a volta nos dois sentidos.
 const slides = [doctors[LAST], ...doctors, doctors[0]];
 
+function Arrow({ direction, onClick }: { direction: "prev" | "next"; onClick: () => void }) {
+  const isPrev = direction === "prev";
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={isPrev ? "Médico anterior" : "Próximo médico"}
+      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-navy shadow-sm transition-colors hover:bg-cyan-tint hover:text-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        className="h-5 w-5"
+      >
+        <path d={isPrev ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"} />
+      </svg>
+    </button>
+  );
+}
+
 export function Team() {
   const [index, setIndex] = useState(1);
   const [animate, setAnimate] = useState(true);
@@ -96,13 +122,19 @@ export function Team() {
     setDragging(false);
   }
 
+  // Um passo por clique; os clones das pontas cuidam da volta, como no autoplay.
+  function move(step: 1 | -1) {
+    setAnimate(true);
+    setIndex((current) => current + step);
+  }
+
   const active = (index - 1 + doctors.length) % doctors.length;
 
   return (
     <section ref={section} id="equipe" className="scroll-mt-20 bg-white py-16">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <SectionHeading
-          eyebrow="Nossa equipe"
+          eyebrow="Conheça nossa equipe"
           title="Médicos especialistas em neurologia e neurocirurgia"
         />
 
@@ -176,23 +208,31 @@ export function Team() {
             </ul>
           </div>
 
-          <div className="mt-6 flex justify-center gap-2" role="tablist" aria-label="Escolher médico">
-            {doctors.map((doctor, position) => (
-              <button
-                key={doctor.name}
-                type="button"
-                role="tab"
-                aria-selected={position === active}
-                aria-label={doctor.name}
-                onClick={() => {
-                  setAnimate(true);
-                  setIndex(position + 1);
-                }}
-                className={`h-2.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 ${
-                  position === active ? "w-6 bg-navy" : "w-2.5 bg-slate-300 hover:bg-slate-400"
-                }`}
-              />
-            ))}
+          {/* Setas ao lado dos indicadores, e não sobrepostas ao card: o slide é um
+              split de texto + foto, e uma seta flutuante cairia em cima da leitura. */}
+          <div className="mt-6 flex items-center justify-center gap-4">
+            <Arrow direction="prev" onClick={() => move(-1)} />
+
+            <div className="flex gap-2" role="tablist" aria-label="Escolher médico">
+              {doctors.map((doctor, position) => (
+                <button
+                  key={doctor.name}
+                  type="button"
+                  role="tab"
+                  aria-selected={position === active}
+                  aria-label={doctor.name}
+                  onClick={() => {
+                    setAnimate(true);
+                    setIndex(position + 1);
+                  }}
+                  className={`h-2.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 ${
+                    position === active ? "w-6 bg-navy" : "w-2.5 bg-slate-300 hover:bg-slate-400"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <Arrow direction="next" onClick={() => move(1)} />
           </div>
         </div>
       </div>

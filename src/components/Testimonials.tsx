@@ -1,4 +1,4 @@
-import { testimonials } from "@/data/content";
+import { googleBusiness, testimonials } from "@/data/content";
 import { SectionHeading } from "./SectionHeading";
 
 // Só marcamos a seção como vinda do Google quando todos os depoimentos têm o link
@@ -25,13 +25,30 @@ function Stars({ rating }: { rating: number }) {
 
 export function Testimonials() {
   return (
-    <section className="bg-cyan-tint py-16">
+    <section id="avaliacoes" className="scroll-mt-20 bg-cyan-tint py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Depoimentos"
           title="O que dizem os pacientes"
-          description={fromGoogle ? "Avaliações publicadas no Google Maps." : undefined}
+          description={fromGoogle ? "Avaliações publicadas no Google." : undefined}
         />
+
+        {fromGoogle && (
+          <a
+            href={googleBusiness.reviewsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mx-auto -mt-6 mb-10 flex w-fit items-center gap-3 rounded-full bg-white px-5 py-2.5 shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+          >
+            <span className="text-lg font-bold text-navy">
+              {googleBusiness.rating.toLocaleString("pt-BR", { minimumFractionDigits: 1 })}
+            </span>
+            <Stars rating={Math.round(googleBusiness.rating)} />
+            <span className="text-sm text-slate-600">
+              {googleBusiness.reviewCount} avaliações no Google
+            </span>
+          </a>
+        )}
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {testimonials.map((testimonial) => (
@@ -60,6 +77,24 @@ export function Testimonials() {
               </figcaption>
             </figure>
           ))}
+        </div>
+
+        <div className="mt-10 rounded-2xl bg-white p-8 text-center shadow-sm">
+          <h3 className="text-balance text-xl font-bold text-navy sm:text-2xl">
+            Deixe aqui a sua avaliação
+          </h3>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-slate-600">
+            Já foi atendido na Neuropleno? Conte como foi a sua experiência no nosso perfil do
+            Google. Leva menos de um minuto e ajuda outros pacientes a decidirem.
+          </p>
+          <a
+            href={googleBusiness.writeReviewUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-teal px-8 py-3 font-semibold text-white shadow-md transition-colors hover:bg-navy-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+          >
+            Avaliar no Google
+          </a>
         </div>
       </div>
     </section>

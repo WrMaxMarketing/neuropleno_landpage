@@ -38,8 +38,8 @@ export async function InstagramFeed() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Instagram"
-          title="Acompanhe a Neuropleno no dia a dia"
-          description="Conteúdo sobre saúde neurológica e bastidores da clínica."
+          title="Acompanhe a Neuropleno no Instagram"
+          description="Informação de qualidade sobre saúde neurológica, cuidados, exames e tratamentos, além dos bastidores da nossa rotina na clínica. Siga nosso perfil e fique por dentro dos conteúdos da Neuropleno."
         />
 
         {posts.length > 0 && (
