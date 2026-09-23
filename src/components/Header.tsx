@@ -38,7 +38,7 @@ export function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <a href="#home" className="flex items-center gap-2" aria-label={site.name}>
           <Image
-            src="/images/logo-principal.png"
+            src="/images/marca/logo-principal.png"
             alt={site.name}
             width={160}
             height={30}

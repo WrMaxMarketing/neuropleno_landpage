@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# originais enviados pelo cliente (vídeos brutos, pesados demais para o git)
+/originais/videos/

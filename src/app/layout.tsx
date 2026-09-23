@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/facility-1.jpg",
+        url: "/images/estrutura/fachada.jpg",
         width: 1920,
         height: 1280,
         alt: "Clínica Neuropleno",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: ["/images/facility-1.jpg"],
+    images: ["/images/estrutura/fachada.jpg"],
   },
 };
 

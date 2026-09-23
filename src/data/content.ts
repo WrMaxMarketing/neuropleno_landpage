@@ -40,7 +40,7 @@ export const hero = {
   specialties: "Neurologia • Neurocirurgia • Neurointervenção • Exames especializados",
 };
 
-export const teamImage = "/images/hero.webp";
+export const teamImage = "/images/equipe/hero.webp";
 
 export const stats = [
   { label: "Anos de Experiência", value: 10, suffix: "+" },
@@ -61,33 +61,33 @@ export const procedures: Procedure[] = [
   // Manter os cards agrupados nessa ordem — é ela que dá sentido à sequência para quem assiste.
 
   // Consultas
-  { title: "Cefaleia", image: "/images/proc-cefaleia.jpg", category: "neurologia" },
-  { title: "Esquecimentos ou Demência", image: "/images/proc-demencia.jpg", category: "neurologia" },
-  { title: "Doença de Parkinson", image: "/images/proc-parkinson.jpg", category: "neurologia" },
-  { title: "Epilepsia", image: "/images/proc-epilepsia.jpg", category: "neurologia" },
-  { title: "Autismo", image: "/images/proc-autismo.jpg", category: "neurologia" },
-  { title: "TDAH", image: "/images/proc-tdah.jpg", category: "neurologia" },
-  { title: "Esclerose Múltipla", image: "/images/proc-esclerose-multipla.jpg", category: "neurologia" },
-  { title: "Neuropatia Periférica", image: "/images/proc-neuropatia-periferica.jpg", category: "neurologia" },
-  { title: "Fibromialgia", image: "/images/proc-fibromialgia.jpg", category: "neurologia" },
+  { title: "Cefaleia", image: "/images/procedimentos/cefaleia.jpg", category: "neurologia" },
+  { title: "Esquecimentos ou Demência", image: "/images/procedimentos/demencia.jpg", category: "neurologia" },
+  { title: "Doença de Parkinson", image: "/images/procedimentos/parkinson.jpg", category: "neurologia" },
+  { title: "Epilepsia", image: "/images/procedimentos/epilepsia.jpg", category: "neurologia" },
+  { title: "Autismo", image: "/images/procedimentos/autismo.jpg", category: "neurologia" },
+  { title: "TDAH", image: "/images/procedimentos/tdah.jpg", category: "neurologia" },
+  { title: "Esclerose Múltipla", image: "/images/procedimentos/esclerose-multipla.jpg", category: "neurologia" },
+  { title: "Neuropatia Periférica", image: "/images/procedimentos/neuropatia-periferica.jpg", category: "neurologia" },
+  { title: "Fibromialgia", image: "/images/procedimentos/fibromialgia.jpg", category: "neurologia" },
 
   // Exames
-  { title: "Eletroneuromiografia", image: "/images/proc-eletroneuromiografia.jpg", category: "neurologia" },
-  { title: "Eletroencefalograma", image: "/images/proc-eeg.jpg", category: "neurologia" },
-  { title: "Polissonografia", image: "/images/proc-polissonografia.jpg", category: "neurologia" },
-  { title: "Angiografia Cerebral", image: "/images/proc-angiografia.jpg", category: "neurorradiologia" },
+  { title: "Eletroneuromiografia", image: "/images/procedimentos/eletroneuromiografia.jpg", category: "neurologia" },
+  { title: "Eletroencefalograma", image: "/images/procedimentos/eeg.jpg", category: "neurologia" },
+  { title: "Polissonografia", image: "/images/procedimentos/polissonografia.jpg", category: "neurologia" },
+  { title: "Angiografia Cerebral", image: "/images/procedimentos/angiografia.jpg", category: "neurorradiologia" },
 
   // Procedimentos
-  { title: "Punção Lombar com Coleta de Líquor", image: "/images/proc-puncao-lombar.jpg", category: "neurologia" },
-  { title: "Bloqueio de Nervo Occipital", image: "/images/proc-bloqueio-occipital.jpg", category: "neurologia" },
-  { title: "Toxina Botulínica", image: "/images/proc-toxina-botulinica.jpg", category: "neurologia" },
-  { title: "Aneurisma Cerebral", image: "/images/proc-aneurisma.jpg", category: "neurorradiologia" },
-  { title: "Neurointervenção", image: "/images/proc-neurointervencao.jpg", category: "neurorradiologia" },
+  { title: "Punção Lombar com Coleta de Líquor", image: "/images/procedimentos/puncao-lombar.jpg", category: "neurologia" },
+  { title: "Bloqueio de Nervo Occipital", image: "/images/procedimentos/bloqueio-occipital.jpg", category: "neurologia" },
+  { title: "Toxina Botulínica", image: "/images/procedimentos/toxina-botulinica.jpg", category: "neurologia" },
+  { title: "Aneurisma Cerebral", image: "/images/procedimentos/aneurisma.jpg", category: "neurorradiologia" },
+  { title: "Neurointervenção", image: "/images/procedimentos/neurointervencao.jpg", category: "neurorradiologia" },
 
   // Cirurgias
-  { title: "Cirurgia de Coluna", image: "/images/proc-cirurgia-coluna.jpg", category: "neurocirurgia" },
-  { title: "Artrodese de Coluna", image: "/images/proc-artrodese.jpg", category: "neurocirurgia" },
-  { title: "Descompressão do Trigêmeo", image: "/images/proc-trigemeo.jpg", category: "neurocirurgia" },
+  { title: "Cirurgia de Coluna", image: "/images/procedimentos/cirurgia-coluna.jpg", category: "neurocirurgia" },
+  { title: "Artrodese de Coluna", image: "/images/procedimentos/artrodese.jpg", category: "neurocirurgia" },
+  { title: "Descompressão do Trigêmeo", image: "/images/procedimentos/trigemeo.jpg", category: "neurocirurgia" },
 ];
 
 export type SpecialtyArea = {
@@ -103,21 +103,21 @@ export const specialtyAreas: SpecialtyArea[] = [
     title: "Neurologia",
     description:
       "Investigação e tratamento de dores de cabeça, enxaqueca, Parkinson, Alzheimer, epilepsia, AVC e outros sintomas neurológicos, com avaliação individualizada e acompanhamento especializado.",
-    image: "/images/proc-parkinson.jpg",
+    image: "/images/procedimentos/parkinson.jpg",
   },
   {
     key: "neurocirurgia",
     title: "Neurocirurgia",
     description:
       "Tratamento especializado de tumores cerebrais, doenças da coluna, compressões nervosas e outras condições neurocirúrgicas, sempre buscando a melhor estratégia para cada paciente.",
-    image: "/images/proc-tumor-cerebral.jpg",
+    image: "/images/procedimentos/tumor-cerebral.jpg",
   },
   {
     key: "neurorradiologia",
     title: "Neurorradiologia",
     description:
       "Abordagem de aneurismas cerebrais, doenças vasculares, angioplastia de carótida, angiografia e outros procedimentos realizados pelos vasos sanguíneos.",
-    image: "/images/proc-aneurisma.jpg",
+    image: "/images/procedimentos/aneurisma.jpg",
   },
 ];
 
@@ -149,7 +149,7 @@ export const doctors: Doctor[] = [
       "Também acompanha neuropatias, miastenia e distúrbios do sono",
     ],
     ctaLabel: "Quero agendar minha consulta",
-    image: "/images/dr-davi-said-araujo.jpg",
+    image: "/images/equipe/dr-davi-said-araujo.jpg",
   },
   {
     name: "Dr. Marconi Cosme Soares de Oliveira Filho",
@@ -161,7 +161,7 @@ export const doctors: Doctor[] = [
       "Investiga formigamentos, fraqueza, túnel do carpo, radiculopatias e outras alterações neurológicas",
     ],
     ctaLabel: "Quero agendar minha consulta",
-    image: "/images/dr-marconi-cosme.jpg",
+    image: "/images/equipe/dr-marconi-cosme.jpg",
   },
   {
     name: "Dr. Frederico Maia Prado",
@@ -173,7 +173,7 @@ export const doctors: Doctor[] = [
       "Realiza consultas, eletroneuromiografia e bloqueios de nervos periféricos",
     ],
     ctaLabel: "Quero agendar minha consulta",
-    image: "/images/dr-frederico-maia-prado.jpg",
+    image: "/images/equipe/dr-frederico-maia-prado.jpg",
   },
   {
     name: "Dr. Romilto Pacheco",
@@ -186,7 +186,7 @@ export const doctors: Doctor[] = [
       "Atuação em AVC, aneurismas, tumores, doenças da coluna e tratamentos por cirurgia ou cateter",
     ],
     ctaLabel: "Quero agendar minha avaliação",
-    image: "/images/dr-romilto-pacheco.jpg",
+    image: "/images/equipe/dr-romilto-pacheco.jpg",
   },
 ];
 
@@ -202,12 +202,12 @@ export type MediaMention = {
 
 // Apenas veículos com matéria real verificada entram nesta lista — sem link real, sem entrada.
 export const mediaLogos: MediaMention[] = [
-  { name: "Terra", image: "/images/media-terra.png" },
-  { name: "Globo", image: "/images/media-globo.png" },
-  { name: "iG", image: "/images/media-ig.png" },
-  { name: "UOL", image: "/images/media-uol.png" },
-  { name: "Valor Econômico", image: "/images/media-valor-economico.png" },
-  { name: "O Globo", image: "/images/media-oglobo.png" },
+  { name: "Terra", image: "/images/midia/terra.png" },
+  { name: "Globo", image: "/images/midia/globo.png" },
+  { name: "iG", image: "/images/midia/ig.png" },
+  { name: "UOL", image: "/images/midia/uol.png" },
+  { name: "Valor Econômico", image: "/images/midia/valor-economico.png" },
+  { name: "O Globo", image: "/images/midia/oglobo.png" },
 ];
 
 export const behindTheScenesVideo = {
@@ -216,7 +216,7 @@ export const behindTheScenesVideo = {
   description:
     "Registro real de um atendimento na Clínica Neuropleno, mostrando como funciona o exame que avalia a atividade elétrica de nervos e músculos. Exame realizado por equipe especializada em neurofisiologia, com cuidado e orientação em todas as etapas.",
   video: "/videos/exame-eletroneuromiografia.mp4",
-  poster: "/images/exame-eletroneuromiografia-poster.jpg",
+  poster: "/images/posters/eletroneuromiografia.jpg",
 };
 
 export const facilityText =
@@ -226,29 +226,29 @@ export const facilityText =
 // em primeiro plano é conteúdo da Equipe, não da Estrutura — facility-4, 5 e 6 são
 // os médicos em procedimento e por isso ficam fora desta lista.
 export const facilityImages = [
-  "/images/facility-1.jpg",
-  "/images/facility-2.jpg",
-  "/images/facility-3.jpg",
+  "/images/estrutura/fachada.jpg",
+  "/images/estrutura/recepcao.jpg",
+  "/images/estrutura/sala-de-espera.jpg",
 ];
 
 export const steps = [
   {
-    icon: "/images/step-1.svg",
+    icon: "/images/passos/1.svg",
     title: "Agende Sua Consulta",
     description: "Agende sua consulta pelo nosso WhatsApp com um clique",
   },
   {
-    icon: "/images/step-2.svg",
+    icon: "/images/passos/2.svg",
     title: "Realize Sua Avaliação",
     description: "Avaliação médica personalizada, com recursos de ponta",
   },
   {
-    icon: "/images/step-3.svg",
+    icon: "/images/passos/3.svg",
     title: "Realize Seus Exames e Tratamento",
     description: "Seja clínico ou cirúrgico, aqui você tem acesso ao plano completo",
   },
   {
-    icon: "/images/step-4.svg",
+    icon: "/images/passos/4.svg",
     title: "Recupere Sua Qualidade de Vida",
     description: "Com o diagnóstico certo e a abordagem correta",
   },
