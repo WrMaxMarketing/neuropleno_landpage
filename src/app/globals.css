@@ -31,3 +31,28 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+/* Entrada do CTA principal do hero: sobe e aparece uma vez, no carregamento.
+   O fill-mode "both" segura o estado inicial (invisível) até o delay acabar,
+   e o `animation: none` do reduced-motion devolve o botão já visível — a opacidade
+   zero mora só no keyframe, nunca na classe, para o botão não sumir sem animação. */
+@keyframes cta-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cta-enter {
+  animation: cta-enter 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-enter {
+    animation: none;
+  }
+}

@@ -34,7 +34,7 @@ export function Hero() {
             {site.cityShort}
           </p>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="cta-enter mt-6 flex flex-col gap-3 sm:flex-row">
             <CtaButton size="lg" className="w-full sm:w-auto">
               Agendar Consulta
             </CtaButton>
