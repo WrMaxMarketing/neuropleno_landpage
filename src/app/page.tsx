@@ -12,7 +12,6 @@ import { Team } from "@/components/Team";
 import { Procedures } from "@/components/Procedures";
 import { Facility } from "@/components/Facility";
 import { Testimonials } from "@/components/Testimonials";
-import { MediaBar } from "@/components/MediaBar";
 import { InstagramFeed } from "@/components/InstagramFeed";
 import { Location } from "@/components/Location";
 import { Faq } from "@/components/Faq";
@@ -44,7 +43,6 @@ export default function Home() {
         <InstagramFeed />
         <Location />
         <Faq />
-        <MediaBar />
         <FinalCta />
       </main>
       <Footer />

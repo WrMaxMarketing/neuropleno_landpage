@@ -1,5 +1,7 @@
 import { site, whatsappLink } from "@/data/content";
+import { CtaButton } from "./CtaButton";
 import { SectionHeading } from "./SectionHeading";
+import { InstagramIcon, WhatsAppIcon } from "./SocialIcons";
 
 export function Location() {
   const query = encodeURIComponent(`${site.name}, ${site.address}`);
@@ -10,7 +12,7 @@ export function Location() {
         <SectionHeading eyebrow="Localização e contato" title="Onde nos encontrar" />
 
         <div className="grid items-stretch gap-6 lg:grid-cols-[1fr_1.5fr]">
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="flex flex-col rounded-2xl bg-white p-6 shadow-sm">
             <ul className="space-y-5 border-l-2 border-teal/40 pl-5 text-slate-700">
               <li>
                 <p className="text-sm font-semibold text-navy">Endereço</p>
@@ -30,12 +32,36 @@ export function Location() {
                   href={whatsappLink()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-sm text-sm font-semibold text-teal hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+                  className="inline-flex items-center gap-2 rounded-sm text-sm font-semibold text-teal hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
                 >
-                  {site.whatsappDisplay}
+                  <WhatsAppIcon className="h-5 w-5 shrink-0 text-[#25D366]" />
+                  <span>{site.whatsappDisplay}</span>
+                </a>
+              </li>
+              <li>
+                <p className="text-sm font-semibold text-navy">Siga no Instagram</p>
+                <a
+                  href={site.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-sm text-sm font-semibold text-teal hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+                >
+                  <InstagramIcon className="h-5 w-5 shrink-0 text-[#E1306C]" />
+                  <span>{site.instagramHandle}</span>
                 </a>
               </li>
             </ul>
+
+            {/* Quem chega até aqui já sabe onde a clínica fica: o passo seguinte é marcar. */}
+            <div className="mt-8">
+              <CtaButton
+                size="lg"
+                className="w-full"
+                message={`Olá! Vim pelo site e gostaria de agendar uma consulta na ${site.name}.`}
+              >
+                Agendar minha consulta
+              </CtaButton>
+            </div>
           </div>
 
           <div className="min-h-72 overflow-hidden rounded-2xl shadow-sm">

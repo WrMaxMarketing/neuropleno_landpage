@@ -6,7 +6,7 @@ import { doctors } from "@/data/content";
 import { CtaButton } from "./CtaButton";
 import { SectionHeading } from "./SectionHeading";
 
-const AUTOPLAY_MS = 9000;
+const AUTOPLAY_MS = 3000;
 const LAST = doctors.length - 1;
 // Clones nas pontas ([último, ...médicos, primeiro]) para o carrossel dar a volta nos dois sentidos.
 const slides = [doctors[LAST], ...doctors, doctors[0]];

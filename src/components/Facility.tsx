@@ -12,17 +12,14 @@ export function Facility() {
           description={facilityText}
         />
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {facilityImages.map((image) => (
-            <div
-              key={image}
-              className={`relative aspect-[4/3] overflow-hidden rounded-xl `}
-            >
+            <div key={image.src} className="relative aspect-[4/3] overflow-hidden rounded-xl">
               <Image
-                src={image}
-                alt="Estrutura da Clínica Neuropleno"
+                src={image.src}
+                alt={image.alt}
                 fill
-                sizes="(max-width: 640px) 100vw, 33vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 className="object-cover"
               />
             </div>

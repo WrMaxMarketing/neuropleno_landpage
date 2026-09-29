@@ -1,6 +1,6 @@
-import Image from "next/image";
-import { facilityImages, facilityText, site } from "@/data/content";
+import { aboutImages, facilityText, site } from "@/data/content";
 import { CtaButton } from "./CtaButton";
+import { ImageCarousel } from "./ImageCarousel";
 
 const highlights = [
   "Consultas com o tempo necessário para ouvir o paciente e traçar a melhor estratégia de tratamento.",
@@ -12,15 +12,11 @@ export function About() {
   return (
     <section id="sobre" className="scroll-mt-20 bg-cyan-tint py-16">
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2">
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-md">
-          <Image
-            src={facilityImages[0]}
-            alt="Estrutura da Clínica Neuropleno"
-            fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
-          />
-        </div>
+        <ImageCarousel
+          images={aboutImages}
+          intervalMs={2600}
+          className="aspect-[4/3] w-full rounded-2xl shadow-md"
+        />
 
         <div>
           <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-teal">

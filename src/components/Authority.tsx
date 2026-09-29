@@ -24,10 +24,10 @@ const areas = [
     position: "sm:col-start-1 sm:row-start-2",
   },
   {
-    title: "Avaliação clínica e acompanhamento",
-    highlight: "Não conviva com sintomas sem entender a causa.",
+    title: "Neurointervenção",
+    highlight: "Tratamento por dentro do vaso, sem cortes e com recuperação mais rápida.",
     description:
-      "Uma consulta humanizada e detalhada para investigar seus sintomas, definir o diagnóstico e construir o tratamento mais adequado para você, com acompanhamento em cada etapa.",
+      "Procedimentos endovasculares guiados por imagem para AVC, aneurismas cerebrais e doenças dos vasos do cérebro e do pescoço, conduzidos por equipe com formação em neurorradiologia intervencionista.",
     position: "sm:col-start-2 sm:row-start-2",
   },
 ];

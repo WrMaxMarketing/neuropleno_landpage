@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { nav, site, whatsappLink } from "@/data/content";
+import { InstagramIcon, WhatsAppIcon } from "./SocialIcons";
 
 export function Footer() {
   return (
@@ -43,9 +44,10 @@ export function Footer() {
                 href={whatsappLink()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-sm hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
+                className="inline-flex items-center gap-2 rounded-sm hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
               >
-                WhatsApp: {site.whatsappDisplay}
+                <WhatsAppIcon className="h-5 w-5 shrink-0 text-[#25D366]" />
+                <span>{site.whatsappDisplay}</span>
               </a>
             </li>
             <li>
@@ -53,9 +55,10 @@ export function Footer() {
                 href={site.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-sm hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
+                className="inline-flex items-center gap-2 rounded-sm hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
               >
-                Instagram
+                <InstagramIcon className="h-5 w-5 shrink-0 text-[#E1306C]" />
+                <span>{site.instagramHandle}</span>
               </a>
             </li>
           </ul>

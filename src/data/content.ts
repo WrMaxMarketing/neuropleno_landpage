@@ -10,6 +10,7 @@ export const site = {
   whatsapp: "5586988519192",
   whatsappDisplay: "(86) 98851-9192",
   instagram: "https://www.instagram.com/neuroplenoclinica",
+  instagramHandle: "@neuroplenoclinica",
   // Exigido pela Resolução CFM nº 2.336/2023 para publicidade de estabelecimentos assistenciais
   // em ambiente virtual. Confirme os dados corretos com a clínica antes de publicar — a Footer só
   // exibe esta linha quando ambos os campos estiverem preenchidos.
@@ -190,26 +191,6 @@ export const doctors: Doctor[] = [
   },
 ];
 
-export type MediaMention = {
-  name: string;
-  image: string;
-  // Preencha com a matéria real (headline, assunto e link) para cada veículo.
-  // Enquanto vazio, o card exibe apenas a logo, sem link — nunca inventar URL/manchete.
-  headline?: string;
-  topic?: string;
-  url?: string;
-};
-
-// Apenas veículos com matéria real verificada entram nesta lista — sem link real, sem entrada.
-export const mediaLogos: MediaMention[] = [
-  { name: "Terra", image: "/images/midia/terra.png" },
-  { name: "Globo", image: "/images/midia/globo.png" },
-  { name: "iG", image: "/images/midia/ig.png" },
-  { name: "UOL", image: "/images/midia/uol.png" },
-  { name: "Valor Econômico", image: "/images/midia/valor-economico.png" },
-  { name: "O Globo", image: "/images/midia/oglobo.png" },
-];
-
 export const behindTheScenesVideo = {
   eyebrow: "Bastidores",
   title: "Veja um exame de eletroneuromiografia na prática",
@@ -222,13 +203,35 @@ export const behindTheScenesVideo = {
 export const facilityText =
   "Trazemos para Teresina-PI diagnósticos precisos, exames de alta complexidade e tratamentos personalizados, tudo com tecnologia de ponta e equipe médica de referência nacional. Cuidar da sua saúde neurológica nunca foi tão seguro, moderno e humano.";
 
-// Só o espaço físico entra aqui: fachada, recepção, espera, salas. Foto com médico
-// em primeiro plano é conteúdo da Equipe, não da Estrutura — facility-4, 5 e 6 são
-// os médicos em procedimento e por isso ficam fora desta lista.
-export const facilityImages = [
-  "/images/estrutura/fachada.jpg",
-  "/images/estrutura/recepcao.jpg",
-  "/images/estrutura/sala-de-espera.jpg",
+export type FacilityImage = {
+  src: string;
+  /** Descreve o ambiente específico — o alt genérico se repetia em todas as fotos. */
+  alt: string;
+};
+
+// Só o espaço físico entra aqui: fachada, recepção, espera, salas. Foto com pessoa
+// em primeiro plano é conteúdo da Equipe/Sobre, não da Estrutura — facility-4, 5 e 6
+// são os médicos em procedimento e por isso ficam fora desta lista.
+export const facilityImages: FacilityImage[] = [
+  { src: "/images/estrutura/fachada.jpg", alt: "Fachada da Clínica Neuropleno" },
+  { src: "/images/estrutura/recepcao.jpg", alt: "Recepção da Clínica Neuropleno" },
+  { src: "/images/estrutura/recepcao-2.jpg", alt: "Balcão de recepção e área de espera da Clínica Neuropleno" },
+  { src: "/images/estrutura/sala-de-espera.jpg", alt: "Sala de espera da Clínica Neuropleno" },
+  { src: "/images/estrutura/lounge.jpg", alt: "Lounge de espera da Clínica Neuropleno" },
+  { src: "/images/estrutura/consultorio.jpg", alt: "Consultório médico da Clínica Neuropleno" },
+  { src: "/images/estrutura/consultorio-2.jpg", alt: "Consultório médico da Clínica Neuropleno" },
+  { src: "/images/estrutura/sala-de-procedimentos.jpg", alt: "Sala de procedimentos da Clínica Neuropleno" },
+];
+
+// Carrossel da seção Sobre: só o espaço da clínica, sem pessoas em primeiro plano.
+export const aboutImages: FacilityImage[] = [
+  { src: "/images/estrutura/fachada.jpg", alt: "Fachada da Clínica Neuropleno" },
+  { src: "/images/estrutura/recepcao-2.jpg", alt: "Recepção da Clínica Neuropleno" },
+  { src: "/images/estrutura/lounge.jpg", alt: "Lounge de espera da Clínica Neuropleno" },
+  { src: "/images/estrutura/sala-de-espera.jpg", alt: "Sala de espera da Clínica Neuropleno" },
+  { src: "/images/estrutura/consultorio.jpg", alt: "Consultório médico da Clínica Neuropleno" },
+  { src: "/images/estrutura/consultorio-2.jpg", alt: "Consultório médico da Clínica Neuropleno" },
+  { src: "/images/estrutura/sala-de-procedimentos.jpg", alt: "Sala de procedimentos da Clínica Neuropleno" },
 ];
 
 export const steps = [

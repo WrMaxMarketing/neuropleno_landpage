@@ -2,14 +2,31 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { procedures, whatsappLink } from "@/data/content";
 import { SectionHeading } from "./SectionHeading";
 
-// Velocidade da esteira, em pixels por segundo. O movimento agora é do scroll da
-// própria trilha (e não de uma animação CSS), para conviver com as setas, o swipe
-// e a roda do mouse sem brigar por controle do mesmo eixo.
-const SPEED = 40;
+// Velocidade da esteira, em pixels por segundo.
+const SPEED = 85;
+// Velocidade do deslocamento disparado pelas setas: quase um salto, mas animado —
+// o rastro curto é o que mostra para que lado a esteira andou.
+const ARROW_SPEED = 5200;
+
+// A posição da esteira é nossa (um transform), e não o scrollLeft do navegador: com
+// scroll nativo a seta "anterior" travava em zero — o navegador não deixa rolar para
+// trás do início — e a rolagem suave brigava a cada frame com o autoplay, que escreve
+// na mesma propriedade. Aqui os dois compartilham o mesmo offset e o loop é infinito
+// nos dois sentidos.
+function shiftTrack(el: HTMLUListElement | null, current: number, delta: number) {
+  if (!el) return current;
+  // A lista é duplicada: andar meia largura cai exatamente no mesmo card, então
+  // rebobinar aí é invisível para quem assiste.
+  const half = el.scrollWidth / 2;
+  if (half <= 0) return current;
+  const next = (((current + delta) % half) + half) % half;
+  el.style.transform = `translate3d(${-next}px, 0, 0)`;
+  return next;
+}
 
 function Arrow({ direction, onClick }: { direction: "prev" | "next"; onClick: () => void }) {
   const isPrev = direction === "prev";
@@ -38,47 +55,85 @@ function Arrow({ direction, onClick }: { direction: "prev" | "next"; onClick: ()
 }
 
 export function Procedures() {
-  // A lista é duplicada para o loop ficar contínuo: ao passar da metade, o scroll
-  // volta uma metade para trás e o visitante não vê emenda.
   const loop = [...procedures, ...procedures];
 
   const track = useRef<HTMLUListElement>(null);
-  const [paused, setPaused] = useState(false);
+  const offset = useRef(0); // posição atual da esteira, em px
+  const pending = useRef(0); // px que ainda faltam percorrer por causa das setas
+  const paused = useRef(false);
+  const pointer = useRef<number | null>(null);
+  const lastX = useRef(0);
+  const startX = useRef(0);
+  const dragged = useRef(false);
 
   useEffect(() => {
     const el = track.current;
     if (!el) return;
-    if (paused) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let frame = 0;
     let previous: number | null = null;
 
     const tick = (now: number) => {
-      if (previous !== null) el.scrollLeft += (SPEED * (now - previous)) / 1000;
+      // Um dt gigante (aba em segundo plano, aparelho dormindo) viraria um pulo.
+      const dt = previous === null ? 0 : Math.min(now - previous, 100);
       previous = now;
+
+      let delta = 0;
+      if (pending.current !== 0) {
+        // O passo das setas tem prioridade sobre o autoplay: um clique durante a
+        // esteira em movimento precisa avançar exatamente um card, nem mais.
+        const max = (ARROW_SPEED * dt) / 1000;
+        const step = Math.sign(pending.current) * Math.min(Math.abs(pending.current), max);
+        const rest = pending.current - step;
+        pending.current = Math.abs(rest) < 0.5 ? 0 : rest;
+        delta = step;
+      } else if (!paused.current && !reduced) {
+        delta = (SPEED * dt) / 1000;
+      }
+
+      if (delta !== 0) offset.current = shiftTrack(el, offset.current, delta);
       frame = requestAnimationFrame(tick);
     };
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [paused]);
+  }, []);
 
-  // O rebobinar vale para o autoplay e para as setas, por isso mora no onScroll.
-  function handleScroll() {
-    const el = track.current;
-    if (!el) return;
-    const half = el.scrollWidth / 2;
-    if (el.scrollLeft >= half) el.scrollLeft -= half;
-    else if (el.scrollLeft <= 0) el.scrollLeft += half;
+  // Um card por clique, medido no próprio DOM para acompanhar o breakpoint. Somar
+  // (em vez de atribuir) faz cliques repetidos andarem um card cada, sem se cancelar.
+  function move(step: 1 | -1) {
+    const card = track.current?.firstElementChild?.clientWidth ?? 280;
+    pending.current += step * card;
   }
 
-  function move(step: 1 | -1) {
-    const el = track.current;
-    if (!el) return;
-    // Um card por clique, medido no próprio DOM para acompanhar o breakpoint.
-    const card = el.firstElementChild?.clientWidth ?? 280;
-    el.scrollBy({ left: step * card, behavior: "smooth" });
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    pointer.current = event.pointerId;
+    lastX.current = event.clientX;
+    startX.current = event.clientX;
+    dragged.current = false;
+    paused.current = true;
+    pending.current = 0;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    if (pointer.current !== event.pointerId) return;
+    const dx = event.clientX - lastX.current;
+    lastX.current = event.clientX;
+    if (Math.abs(event.clientX - startX.current) > 8) dragged.current = true;
+    // O conteúdo acompanha o dedo: arrastar para a esquerda avança a esteira.
+    offset.current = shiftTrack(track.current, offset.current, -dx);
+  }
+
+  function handlePointerUp(event: React.PointerEvent<HTMLDivElement>) {
+    if (pointer.current !== event.pointerId) return;
+    pointer.current = null;
+    paused.current = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
   }
 
   return (
@@ -92,19 +147,36 @@ export function Procedures() {
       </div>
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        {/* A pausa mora na trilha, e não em um bloco que envolva também as setas: o
+            cursor parado sobre uma seta não é alguém lendo um card, é alguém
+            clicando — e congelar a esteira aí só atrapalha. */}
         <div
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onFocus={() => setPaused(true)}
-          onBlur={() => setPaused(false)}
-          onPointerDown={() => setPaused(true)}
-          onPointerUp={() => setPaused(false)}
+          className="cursor-grab touch-pan-y overflow-hidden rounded-2xl active:cursor-grabbing"
+          onMouseEnter={() => {
+            paused.current = true;
+          }}
+          onMouseLeave={() => {
+            paused.current = false;
+          }}
+          onFocus={() => {
+            paused.current = true;
+          }}
+          onBlur={() => {
+            paused.current = false;
+          }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          // Impede que o arraste vire clique no card e abra o WhatsApp sem querer.
+          onClickCapture={(event) => {
+            if (dragged.current) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+          }}
         >
-          <ul
-            ref={track}
-            onScroll={handleScroll}
-            className="flex overflow-x-auto overflow-y-hidden rounded-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          >
+          <ul ref={track} className="flex w-max will-change-transform">
             {loop.map((procedure, index) => (
               <li
                 key={`${procedure.title}-${index}`}
@@ -117,6 +189,7 @@ export function Procedures() {
                   )}
                   target="_blank"
                   rel="noopener noreferrer"
+                  draggable={false}
                   tabIndex={index >= procedures.length ? -1 : 0}
                   className="group block overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-shadow hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
                 >
@@ -125,20 +198,23 @@ export function Procedures() {
                       src={procedure.image}
                       alt={procedure.title}
                       fill
+                      draggable={false}
                       sizes="288px"
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
-                  <p className="p-3 text-center text-sm font-semibold text-navy">{procedure.title}</p>
+                  <p className="p-3 text-center text-sm font-semibold text-navy">
+                    {procedure.title}
+                  </p>
                 </Link>
               </li>
             ))}
           </ul>
+        </div>
 
-          <div className="mt-6 flex items-center justify-center gap-4">
-            <Arrow direction="prev" onClick={() => move(-1)} />
-            <Arrow direction="next" onClick={() => move(1)} />
-          </div>
+        <div className="mt-6 flex items-center justify-center gap-4">
+          <Arrow direction="prev" onClick={() => move(-1)} />
+          <Arrow direction="next" onClick={() => move(1)} />
         </div>
       </div>
     </section>
