@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { doctors } from "@/data/content";
+import { doctors, supportTeam, whatsappLink } from "@/data/content";
 import { CtaButton } from "./CtaButton";
 import { SectionHeading } from "./SectionHeading";
 
@@ -234,6 +235,55 @@ export function Team() {
 
             <Arrow direction="next" onClick={() => move(1)} />
           </div>
+        </div>
+
+        {/* Corpo clínico de apoio em grade: cards menores, sem lista de atuação, para
+            deixar claro que o carrossel acima guarda os especialistas titulares. */}
+        <div className="mt-16 border-t border-slate-200 pt-12">
+          <div className="mx-auto mb-8 max-w-2xl text-center">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-teal">
+              Corpo clínico de apoio
+            </p>
+            <h3 className="text-balance text-2xl font-bold text-navy sm:text-3xl">
+              Especialidades que completam o cuidado
+            </h3>
+            <p className="mt-3 text-slate-600">
+              Profissionais que atuam junto à equipe de neurologia para um acompanhamento
+              integral do paciente.
+            </p>
+          </div>
+
+          <ul className="grid grid-cols-2 gap-5 sm:gap-6 lg:grid-cols-4">
+            {supportTeam.map((professional) => (
+              <li key={professional.name}>
+                <Link
+                  href={whatsappLink(
+                    `Olá! Gostaria de agendar uma consulta com ${professional.name}.`,
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+                >
+                  <div className="relative aspect-[4/5] w-full bg-navy">
+                    <Image
+                      src={professional.image}
+                      alt={professional.name}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 45vw, 260px"
+                      className="object-cover object-top"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col p-4">
+                    <h4 className="text-balance text-base font-bold leading-snug text-navy">
+                      {professional.name}
+                    </h4>
+                    <p className="mt-1 text-sm font-semibold text-teal">{professional.role}</p>
+                    <p className="mt-auto pt-3 text-xs text-slate-500">{professional.register}</p>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>

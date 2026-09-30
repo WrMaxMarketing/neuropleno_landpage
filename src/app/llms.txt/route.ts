@@ -1,4 +1,4 @@
-import { doctors, faq, procedures, site, symptoms } from "@/data/content";
+import { doctors, faq, procedures, site, supportTeam, symptoms } from "@/data/content";
 import { siteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-static";
@@ -24,6 +24,12 @@ export function GET() {
   lines.push("## Equipe médica");
   for (const doctor of doctors) {
     lines.push(`- **${doctor.name}**: ${doctor.role}. ${doctor.highlights.join(". ")}.`);
+  }
+  lines.push("");
+
+  lines.push("## Corpo clínico de apoio");
+  for (const professional of supportTeam) {
+    lines.push(`- **${professional.name}**: ${professional.role}. ${professional.register}.`);
   }
   lines.push("");
 

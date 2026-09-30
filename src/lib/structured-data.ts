@@ -1,4 +1,4 @@
-import { doctors, faq, site } from "@/data/content";
+import { doctors, faq, site, supportTeam } from "@/data/content";
 import { siteUrl } from "@/lib/site-url";
 
 export function toJsonLdScript(data: unknown) {
@@ -40,11 +40,20 @@ export function getMedicalClinicJsonLd() {
       },
     ],
     sameAs: [site.instagram],
-    employee: doctors.map((doctor) => ({
-      "@type": "Physician",
-      name: doctor.name,
-      description: `${doctor.role}. ${doctor.highlights.join(". ")}.`,
-    })),
+    employee: [
+      ...doctors.map((doctor) => ({
+        "@type": "Physician",
+        name: doctor.name,
+        description: `${doctor.role}. ${doctor.highlights.join(". ")}.`,
+      })),
+      // Person (e não Physician): o corpo de apoio inclui profissionais não médicos.
+      ...supportTeam.map((professional) => ({
+        "@type": "Person",
+        name: professional.name,
+        jobTitle: professional.role,
+        description: `${professional.role} | ${professional.register}`,
+      })),
+    ],
   };
 }
 

@@ -191,6 +191,46 @@ export const doctors: Doctor[] = [
   },
 ];
 
+/**
+ * Corpo clínico de apoio: especialidades complementares que atendem na clínica.
+ * Entram em grade compacta abaixo do carrossel — nome, especialidade e registro,
+ * sem lista de atuação, para manter a hierarquia em relação aos médicos titulares.
+ */
+export type SupportProfessional = {
+  name: string;
+  role: string;
+  /** Registro no conselho (CRM/CRP) e RQE, quando houver. */
+  register: string;
+  image: string;
+};
+
+export const supportTeam: SupportProfessional[] = [
+  {
+    name: "Dr. Jordano Sampaio Guimarães Silva",
+    role: "Psiquiatra",
+    register: "CRM-PI 5301",
+    image: "/images/equipe/dr-jordano-sampaio.png",
+  },
+  {
+    name: "Dr. Wilder Dias Pacheco",
+    role: "Cardiologista e Arritmologista",
+    register: "CRM-PI 5233 | RQE 4998 / 4999",
+    image: "/images/equipe/dr-wilder-dias.png",
+  },
+  {
+    name: "Flávia Juliana Dourado Paixão",
+    role: "Psicóloga e Neuropsicóloga",
+    register: "CRP 21/00942",
+    image: "/images/equipe/flavia-juliana-dourado.png",
+  },
+  {
+    name: "Dr. Ricardo Carvalho",
+    role: "Nutrologia, Nutrição Enteral e Parenteral (ABRAN)",
+    register: "RQE 4013 / 5647 / 3242",
+    image: "/images/equipe/dr-ricardo-carvalho.png",
+  },
+];
+
 export const behindTheScenesVideo = {
   eyebrow: "Bastidores",
   title: "Veja um exame de eletroneuromiografia na prática",
