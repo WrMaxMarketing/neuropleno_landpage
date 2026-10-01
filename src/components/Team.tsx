@@ -7,7 +7,7 @@ import { doctors, supportTeam, whatsappLink } from "@/data/content";
 import { CtaButton } from "./CtaButton";
 import { SectionHeading } from "./SectionHeading";
 
-const AUTOPLAY_MS = 3000;
+const AUTOPLAY_MS = 2000;
 const LAST = doctors.length - 1;
 // Clones nas pontas ([último, ...médicos, primeiro]) para o carrossel dar a volta nos dois sentidos.
 const slides = [doctors[LAST], ...doctors, doctors[0]];
@@ -136,7 +136,7 @@ export function Team() {
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="Conheça nossa equipe"
-          title="Médicos especialistas em neurologia e neurocirurgia"
+          title="Médicos especialistas em neurologia e neurocirurgia, e neurorradiologista intervencionista"
         />
 
         {/* Sem pausa no hover: o carrossel ocupa a largura da seção e o cursor para
