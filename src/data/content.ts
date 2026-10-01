@@ -224,6 +224,12 @@ export const supportTeam: SupportProfessional[] = [
     image: "/images/equipe/flavia-juliana-dourado.png",
   },
   {
+    name: "Dr. João Lucas Silva Santana",
+    role: "Neurologista (especialista em doenças desmielinizantes – neuroimunologia)",
+    register: "CRM-PI 8610 | RQE 6202",
+    image: "/images/equipe/dr-joao-lucas-santana.jpg",
+  },
+  {
     name: "Dr. Ricardo Carvalho",
     role: "Nutrologia, Nutrição Enteral e Parenteral (ABRAN)",
     register: "RQE 4013 / 5647 / 3242",

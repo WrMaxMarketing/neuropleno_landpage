@@ -245,7 +245,7 @@ export function Team() {
               Corpo clínico de apoio
             </p>
             <h3 className="text-balance text-2xl font-bold text-navy sm:text-3xl">
-              Especialidades que completam o cuidado
+              Conheça nossa equipe & suas especialidades
             </h3>
             <p className="mt-3 text-slate-600">
               Profissionais que atuam junto à equipe de neurologia para um acompanhamento
@@ -253,9 +253,17 @@ export function Team() {
             </p>
           </div>
 
-          <ul className="grid grid-cols-2 gap-5 sm:gap-6 lg:grid-cols-4">
+          {/* Três por linha no desktop (3 + 2), duas nas telas menores. Flex-wrap em vez
+              de grid porque o corpo de apoio tem número ímpar de pessoas: o justify-center
+              centraliza a última linha incompleta, coisa que a grade deixaria encostada na
+              esquerda. Cada largura desconta a fatia de gap que cabe ao card, e o teto de
+              52rem no lg mantém o card nos ~260px que a grade de 4 colunas tinha. */}
+          <ul className="mx-auto flex max-w-3xl flex-wrap justify-center gap-5 sm:gap-6 lg:max-w-[52rem]">
             {supportTeam.map((professional) => (
-              <li key={professional.name}>
+              <li
+                key={professional.name}
+                className="w-[calc(50%-0.625rem)] sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+              >
                 <Link
                   href={whatsappLink(
                     `Olá! Gostaria de agendar uma consulta com ${professional.name}.`,
@@ -269,7 +277,7 @@ export function Team() {
                       src={professional.image}
                       alt={professional.name}
                       fill
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 45vw, 260px"
+                      sizes="(max-width: 1024px) 50vw, 261px"
                       className="object-cover object-top"
                     />
                   </div>
