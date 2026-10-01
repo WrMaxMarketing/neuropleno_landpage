@@ -58,7 +58,6 @@ export function Header() {
             </a>
           ))}
         </nav>
-
         <div className="hidden md:block">
           <CtaButton size="md">Agendar Consulta</CtaButton>
         </div>
