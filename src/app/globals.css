@@ -7,6 +7,11 @@
   --color-navy: #023047;
   --color-navy-light: #0a4a63;
   --color-teal: #219ebc;
+  /* Teal de texto pequeno sobre branco: o #219ebc da marca alcança só 3,26:1,
+     abaixo dos 4,5:1 da WCAG AA. Este tom chega a 4,5:1 mantendo a identidade.
+     Usar em rótulos e textos de 13–14px; o #219ebc segue valendo para fundos,
+     ícones e texto grande. */
+  --color-teal-text: #0e7fa3;
   --color-cyan: #3cbdd3;
   --color-cyan-tint: #e8f7fa;
 }
@@ -17,6 +22,7 @@
   --color-navy: var(--color-navy);
   --color-navy-light: var(--color-navy-light);
   --color-teal: var(--color-teal);
+  --color-teal-text: var(--color-teal-text);
   --color-cyan: var(--color-cyan);
   --color-cyan-tint: var(--color-cyan-tint);
   --font-sans: var(--font-geist-sans);

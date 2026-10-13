@@ -237,6 +237,124 @@ export const supportTeam: SupportProfessional[] = [
   },
 ];
 
+/* ------------------------------------------------------------------------- *
+ * Seção "Conheça nossa equipe" (src/components/Team.tsx)
+ *
+ * ESTE é o array que você edita para mexer na seção visível: adicionar médico,
+ * trocar foto, corrigir registro, mudar a aba em que alguém aparece.
+ *
+ * Os arrays `doctors` e `supportTeam` acima continuam existindo porque
+ * alimentam o JSON-LD (src/lib/structured-data.ts) e o /llms.txt — eles não
+ * desenham mais nada na tela. Ao corrigir um nome ou registro aqui, corrija
+ * lá também, senão o dado estruturado fica divergente do visível.
+ * ------------------------------------------------------------------------- */
+
+/**
+ * Abas, na ordem em que aparecem. Uma aba sem nenhum profissional é escondida
+ * automaticamente — não precisa remover daqui para sumir da tela.
+ */
+export const teamSpecialties = [
+  "Neurologia",
+  // Abas unidas: o Dr. Romilto é o único profissional das duas, e separá-las
+  // rendia duas abas com o mesmo card. Quando chegar alguém exclusivo de uma
+  // delas, basta separar aqui e ajustar os `groups` de quem for de cada lado.
+  "Neurocirurgia e neurorradiologia",
+  "Saúde mental",
+  "Cardiologia",
+  "Nutrologia",
+] as const;
+
+export type TeamSpecialty = (typeof teamSpecialties)[number];
+
+export type TeamMember = {
+  name: string;
+  /** Especialidade, exibida em teal sob o nome. Sem registro — ele tem campo próprio. */
+  role: string;
+  /**
+   * Abas em que o profissional aparece. É lista porque alguém pode ter mais de
+   * uma especialidade e precisar aparecer em mais de uma aba.
+   */
+  groups: TeamSpecialty[];
+  /** Registro no conselho (CRM/CRP) e RQE. Nunca preencher sem o dado real. */
+  reg: string;
+  /** Caminho em /public. Sem foto, o card mostra as iniciais sobre gradiente navy. */
+  photo?: string;
+  /** Sobrescreve o link padrão de agendamento (WhatsApp da clínica). */
+  link?: string;
+};
+
+export const teamMembers: TeamMember[] = [
+  {
+    name: "Dr. Davi Said Araújo",
+    role: "Neurologista",
+    groups: ["Neurologia"],
+    reg: "CRM-PI 4898 | RQE 3230",
+    photo: "/images/equipe/dr-davi-said-araujo.jpg",
+  },
+  {
+    // O brief pedia este médico na aba Neurocirurgia, mas o registro da página
+    // é de Neurologia e Neurofisiologia Clínica. Mantido conforme o registro.
+    name: "Dr. Marconi Cosme Soares de Oliveira Filho",
+    role: "Neurologista e Neurofisiologista Clínico",
+    groups: ["Neurologia"],
+    reg: "CRM-PI 5303 | RQE 3558 / 3791",
+    photo: "/images/equipe/dr-marconi-cosme.jpg",
+  },
+  {
+    name: "Dr. Frederico Maia Prado",
+    role: "Neurologista e Neurofisiologista Clínico",
+    groups: ["Neurologia"],
+    reg: "CRM-PI 4096 | RQE 3578",
+    photo: "/images/equipe/dr-frederico-maia-prado.jpg",
+  },
+  {
+    name: "Dr. João Lucas Silva Santana",
+    role: "Neurologista · Doenças desmielinizantes (neuroimunologia)",
+    groups: ["Neurologia"],
+    reg: "CRM-PI 8610 | RQE 6202",
+    photo: "/images/equipe/dr-joao-lucas-santana.jpg",
+  },
+  {
+    name: "Dr. Romilto Pacheco",
+    role: "Neurocirurgião e Neurorradiologista Intervencionista",
+    groups: ["Neurocirurgia e neurorradiologia"],
+    reg: "CRM-PI 5160 | RQE 4472 / 5512",
+    photo: "/images/equipe/dr-romilto-pacheco.jpg",
+  },
+  {
+    name: "Dr. Jordano Sampaio Guimarães Silva",
+    role: "Psiquiatra",
+    groups: ["Saúde mental"],
+    reg: "CRM-PI 5301",
+    photo: "/images/equipe/dr-jordano-sampaio.png",
+  },
+  {
+    name: "Flávia Juliana Dourado Paixão",
+    role: "Psicóloga e Neuropsicóloga",
+    groups: ["Saúde mental"],
+    reg: "CRP 21/00942",
+    photo: "/images/equipe/flavia-juliana-dourado.png",
+  },
+  {
+    name: "Dr. Wilder Dias Pacheco",
+    role: "Cardiologista e Arritmologista",
+    groups: ["Cardiologia"],
+    reg: "CRM-PI 5233 | RQE 4998 / 4999",
+    photo: "/images/equipe/dr-wilder-dias.png",
+  },
+  {
+    // O brief pedia este médico na aba Neurologia, mas o registro da página é
+    // de Nutrologia. Classificar um nutrólogo como neurologista num site de
+    // clínica seria publicidade médica incorreta, então ganhou aba própria.
+    // Decida: mover, renomear a aba ou remover o profissional.
+    name: "Dr. Ricardo Carvalho",
+    role: "Nutrologia, Nutrição Enteral e Parenteral (ABRAN)",
+    groups: ["Nutrologia"],
+    reg: "RQE 4013 / 5647 / 3242",
+    photo: "/images/equipe/dr-ricardo-carvalho.png",
+  },
+];
+
 export const behindTheScenesVideo = {
   eyebrow: "Bastidores",
   title: "Veja um exame de eletroneuromiografia na prática",
