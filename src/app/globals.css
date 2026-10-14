@@ -56,3 +56,36 @@ html {
     animation: none;
   }
 }
+
+/* Seção Especialidades: feixes de luz em cyan subindo de baixo, atrás do cérebro 3D.
+   Ficam entre 10% e 15% de opacidade e só "respiram" — nada que chame atenção. */
+.brain-beams span {
+  position: absolute;
+  bottom: 0;
+  height: 75%;
+  border-radius: 9999px;
+  background: linear-gradient(to top, var(--color-cyan), transparent);
+  filter: blur(1px);
+  opacity: 0.12;
+  animation: brain-beam 8s ease-in-out infinite;
+}
+
+@keyframes brain-beam {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: scaleY(0.85);
+    transform-origin: bottom;
+  }
+  50% {
+    opacity: 0.15;
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brain-beams span {
+    animation: none;
+  }
+}

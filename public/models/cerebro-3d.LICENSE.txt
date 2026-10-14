@@ -1,0 +1,18 @@
+cerebro-3d.glb — modelo 3D do cérebro usado na seção "Especialidades"
+
+Fonte: NeuroMap 3D Brain (https://github.com/Raghavsuthar/neuromap-brain-3d),
+arquivo public/brain-atlas/models/brain.glb, que por sua vez vem do Brain Project
+(itayinbarr/brainproject), derivado de Z-Anatomy e BodyParts3D.
+
+© Z-Anatomy contributors e BodyParts3D / Database Center for Life Science (DBCLS)
+Licença: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Modificações feitas para este site: mantidos só córtex, cerebelo e tronco encefálico;
+malhas unidas em uma só, costuras soldadas, simplificadas (~55 mil triângulos),
+suavizadas (filtro de Taubin) para giros mais arredondados, normais recalculadas,
+centralizadas, normalizadas para raio 1 e comprimidas com meshopt. Esta versão modificada é
+distribuída sob a mesma licença CC BY-SA 4.0.
+
+A imagem estática /images/especialidades/cerebro-3d.webp é uma renderização deste
+modelo e segue a mesma licença.
