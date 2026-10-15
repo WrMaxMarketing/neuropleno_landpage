@@ -53,14 +53,16 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
 
 export function Stats() {
   return (
-    <section className="bg-navy py-14">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 text-center sm:grid-cols-3 sm:px-6">
+    // Três colunas também no celular: empilhados, os números ocupavam quase uma tela
+    // inteira entre o vídeo e as especialidades.
+    <section className="border-b border-white/10 bg-navy py-10 sm:py-14">
+      <div className="mx-auto grid max-w-6xl grid-cols-3 gap-3 px-4 text-center sm:gap-8 sm:px-6">
         {stats.map((stat) => (
           <div key={stat.label}>
-            <div className="text-4xl font-bold text-white sm:text-5xl">
+            <div className="text-2xl font-bold tabular-nums text-white sm:text-5xl">
               <Counter value={stat.value} suffix={stat.suffix} />
             </div>
-            <p className="mt-2 text-sm font-medium uppercase tracking-wide text-cyan">
+            <p className="mt-2 text-[11px] font-medium uppercase leading-tight tracking-wide text-cyan sm:text-sm">
               {stat.label}
             </p>
           </div>

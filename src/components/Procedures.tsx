@@ -6,11 +6,15 @@ import { useEffect, useRef } from "react";
 import { procedures, whatsappLink } from "@/data/content";
 import { SectionHeading } from "./SectionHeading";
 
-// Velocidade da esteira, em pixels por segundo.
-const SPEED = 85;
+// Velocidade da esteira, em pixels por segundo. Devagar o bastante para ler o nome do
+// card enquanto ele passa.
+const SPEED = 40;
 // Velocidade do deslocamento disparado pelas setas: quase um salto, mas animado —
 // o rastro curto é o que mostra para que lado a esteira andou.
 const ARROW_SPEED = 5200;
+// Embalo depois de soltar o arraste: a velocidade do dedo cai por este fator a cada
+// 16,7 ms (um frame a 60 fps). Sem isso a esteira parava seca ao soltar o dedo.
+const INERTIA_DECAY = 0.94;
 
 // A posição da esteira é nossa (um transform), e não o scrollLeft do navegador: com
 // scroll nativo a seta "anterior" travava em zero — o navegador não deixa rolar para
@@ -63,8 +67,11 @@ export function Procedures() {
   const paused = useRef(false);
   const pointer = useRef<number | null>(null);
   const lastX = useRef(0);
+  const lastTime = useRef(0);
   const startX = useRef(0);
   const dragged = useRef(false);
+  const velocity = useRef(0); // px/ms do dedo durante o arraste
+  const inertia = useRef(0); // px/ms que sobram depois de soltar
 
   useEffect(() => {
     const el = track.current;
@@ -88,6 +95,10 @@ export function Procedures() {
         const rest = pending.current - step;
         pending.current = Math.abs(rest) < 0.5 ? 0 : rest;
         delta = step;
+      } else if (inertia.current !== 0) {
+        delta = inertia.current * dt;
+        inertia.current *= Math.pow(INERTIA_DECAY, dt / 16.7);
+        if (Math.abs(inertia.current) < 0.02) inertia.current = 0;
       } else if (!paused.current && !reduced) {
         delta = (SPEED * dt) / 1000;
       }
@@ -96,8 +107,23 @@ export function Procedures() {
       frame = requestAnimationFrame(tick);
     };
 
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    // A esteira só anda com a seção na tela. Antes o loop rodava a página inteira,
+    // gastando CPU (e bateria do celular) enquanto o visitante lia outras seções.
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !frame) {
+        previous = null;
+        frame = requestAnimationFrame(tick);
+      } else if (!entry.isIntersecting && frame) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+    });
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   // Um card por clique, medido no próprio DOM para acompanhar o breakpoint. Somar
@@ -111,17 +137,24 @@ export function Procedures() {
     if (event.pointerType === "mouse" && event.button !== 0) return;
     pointer.current = event.pointerId;
     lastX.current = event.clientX;
+    lastTime.current = event.timeStamp;
     startX.current = event.clientX;
     dragged.current = false;
     paused.current = true;
     pending.current = 0;
+    inertia.current = 0;
+    velocity.current = 0;
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     if (pointer.current !== event.pointerId) return;
     const dx = event.clientX - lastX.current;
+    const dt = Math.max(event.timeStamp - lastTime.current, 1);
     lastX.current = event.clientX;
+    lastTime.current = event.timeStamp;
+    // Média móvel: um evento isolado não decide o embalo.
+    velocity.current = velocity.current * 0.6 + (-dx / dt) * 0.4;
     if (Math.abs(event.clientX - startX.current) > 8) dragged.current = true;
     // O conteúdo acompanha o dedo: arrastar para a esquerda avança a esteira.
     offset.current = shiftTrack(track.current, offset.current, -dx);
@@ -130,6 +163,9 @@ export function Procedures() {
   function handlePointerUp(event: React.PointerEvent<HTMLDivElement>) {
     if (pointer.current !== event.pointerId) return;
     pointer.current = null;
+    // Dedo parado antes de soltar (mais de 80 ms sem mover) não deixa embalo.
+    const stale = event.timeStamp - lastTime.current > 80;
+    inertia.current = dragged.current && !stale ? velocity.current : 0;
     paused.current = false;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
@@ -152,11 +188,13 @@ export function Procedures() {
             clicando — e congelar a esteira aí só atrapalha. */}
         <div
           className="cursor-grab touch-pan-y overflow-hidden rounded-2xl active:cursor-grabbing"
-          onMouseEnter={() => {
-            paused.current = true;
+          // Só o mouse pausa por cima: no toque o navegador emula um mouseenter depois
+          // do tap, e a esteira ficava parada até o visitante tocar em outro lugar.
+          onPointerEnter={(event) => {
+            if (event.pointerType === "mouse") paused.current = true;
           }}
-          onMouseLeave={() => {
-            paused.current = false;
+          onPointerLeave={(event) => {
+            if (event.pointerType === "mouse") paused.current = false;
           }}
           onFocus={() => {
             paused.current = true;

@@ -17,7 +17,7 @@ export function Hero() {
 
           <p className="mt-5 text-sm font-medium text-slate-500">{hero.specialties}</p>
 
-          <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-teal shadow-sm">
+          <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-teal-text shadow-sm">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"

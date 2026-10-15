@@ -14,5 +14,5 @@ suavizadas (filtro de Taubin) para giros mais arredondados, normais recalculadas
 centralizadas, normalizadas para raio 1 e comprimidas com meshopt. Esta versão modificada é
 distribuída sob a mesma licença CC BY-SA 4.0.
 
-A imagem estática /images/especialidades/cerebro-3d.webp é uma renderização deste
+A imagem estática /images/especialidades/cerebro-3d-holograma.webp é uma renderização deste
 modelo e segue a mesma licença.

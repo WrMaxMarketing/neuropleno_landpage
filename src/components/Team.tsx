@@ -11,21 +11,10 @@ import {
   type TeamSpecialty,
 } from "@/data/content";
 
-/** Largura de um card e o vão entre eles. Vivem em CSS para o translate do
- *  carrossel ser puro `calc()` — sem medir nada em JavaScript. */
-const CARD_WIDTH = "min(380px, 100vw - 72px)";
-const GAP = 24;
-
-/** Duração da saída e da entrada na troca de aba, em ms. */
-const LEAVE_MS = 260;
-const ENTER_MS = 400;
-/** Deslocamento lateral da troca de aba. */
-const SHIFT = "3rem";
-
-const SLIDE_EASING = "cubic-bezier(0.2, 0.7, 0.2, 1)";
-
 /** Intervalo do avanço automático. */
-const AUTOPLAY_MS = 3200;
+const AUTOPLAY_MS = 2200;
+/** Depois de um toque, arraste ou clique, o autoplay espera esse tempo para voltar. */
+const RESUME_AFTER_MS = 3000;
 
 /**
  * `useSyncExternalStore` em vez de `useState` + listener: é a API feita para
@@ -56,7 +45,27 @@ function initialsOf(name: string) {
     .join("");
 }
 
-/** O carrossel é um laço infinito, então a seta nunca chega a um fim para desabilitar. */
+/** Distância entre o começo de um card e o do seguinte, lida do DOM para
+ *  acompanhar o breakpoint (a largura do card muda com a tela). */
+function stepOf(track: HTMLElement) {
+  const [first, second] = Array.from(track.children) as HTMLElement[];
+  if (!first) return track.clientWidth;
+  return second ? second.offsetLeft - first.offsetLeft : first.offsetWidth;
+}
+
+/** Um card para o lado pedido; nas pontas, dá a volta até a outra ponta. */
+function advance(track: HTMLElement, direction: 1 | -1, behavior: ScrollBehavior) {
+  const max = track.scrollWidth - track.clientWidth;
+  if (direction === 1 && track.scrollLeft >= max - 2) {
+    track.scrollTo({ left: 0, behavior });
+  } else if (direction === -1 && track.scrollLeft <= 2) {
+    track.scrollTo({ left: max, behavior });
+  } else {
+    track.scrollBy({ left: direction * stepOf(track), behavior });
+  }
+}
+
+/** O carrossel dá a volta nas pontas, então a seta nunca chega a um fim para desabilitar. */
 function Arrow({ direction, onClick }: { direction: "prev" | "next"; onClick: () => void }) {
   const isPrev = direction === "prev";
 
@@ -92,9 +101,11 @@ function MemberCard({ member }: { member: TeamMember }) {
             src={member.photo}
             alt={member.name}
             fill
-            loading="lazy"
+            // Sem lazy: dentro da fita horizontal o navegador só pedia a foto quando o
+            // card já estava entrando, e ela "pipocava" atrasada no meio da passagem.
+            loading="eager"
             draggable={false}
-            sizes="(max-width: 420px) calc(100vw - 72px), 380px"
+            sizes="(max-width: 640px) 78vw, 352px"
             className="object-cover object-top"
           />
         ) : (
@@ -128,6 +139,12 @@ function MemberCard({ member }: { member: TeamMember }) {
   );
 }
 
+/**
+ * Carrossel da equipe sobre a rolagem nativa do navegador (scroll-snap). O arraste,
+ * o embalo e o encaixe no card são do próprio sistema — no celular isso roda fora
+ * da thread do JavaScript, então não engasga nem em Android modesto ou dentro do
+ * navegador do WhatsApp. O JS só cuida do autoplay, das setas e dos pontos.
+ */
 export function Team() {
   const reducedMotion = usePrefersReducedMotion();
 
@@ -142,69 +159,34 @@ export function Team() {
   );
 
   const [specialty, setSpecialty] = useState<TeamSpecialty>(specialties[0]);
-  const [index, setIndex] = useState(0);
-  const [perView, setPerView] = useState(1);
-  const [drag, setDrag] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  /** Desliga a transição no salto silencioso que fecha a volta do laço. */
-  const [animate, setAnimate] = useState(true);
+  /** Card encostado na borda esquerda — alimenta os pontos do celular. */
+  const [active, setActive] = useState(0);
+  const [hasOverflow, setHasOverflow] = useState(false);
   const [inView, setInView] = useState(false);
-  /** Pausa enquanto alguém lê um card pelo teclado. */
+  /** Pausa enquanto alguém navega pelos cards no teclado. O mouse parado em cima não
+   *  pausa: a fita parecia travada para quem só estava olhando. */
   const [focusWithin, setFocusWithin] = useState(false);
 
-  /**
-   * Ciclo da troca de aba. "leaving" apaga e desliza os cards atuais para a
-   * esquerda; o conteúdo é trocado no fim dela. "entering" é o frame em que os
-   * novos cards já existem, deslocados para a direita e invisíveis, ainda sem
-   * transição — é o estado inicial que o navegador precisa pintar antes de a
-   * animação de entrada poder partir dele.
-   */
-  const [phase, setPhase] = useState<"idle" | "leaving" | "entering">("idle");
-  const pending = useRef<TeamSpecialty | null>(null);
-
   const section = useRef<HTMLElement>(null);
-  const viewport = useRef<HTMLDivElement>(null);
-  const firstCard = useRef<HTMLLIElement>(null);
-  const dragStart = useRef<number | null>(null);
-  const dragged = useRef(false);
+  const track = useRef<HTMLUListElement>(null);
+  const lastInteraction = useRef(0);
+  const scrollFrame = useRef(0);
 
   const visible = useMemo(
     () => teamMembers.filter((member) => member.groups.includes(specialty)),
     [specialty],
   );
 
-  const hasOverflow = visible.length > perView;
-
-  /**
-   * Laço infinito por duplicação: a trilha repete a lista inteira, então ao
-   * passar do último card o visitante já está vendo a cópia do primeiro. Quando
-   * a transição termina além do fim, o índice volta `visible.length` posições
-   * com a animação desligada — o salto cai exatamente sobre um card idêntico e
-   * por isso é invisível. Com tudo cabendo na tela não há o que rodar, e a
-   * lista fica simples.
-   */
-  const slides = hasOverflow ? [...visible, ...visible] : visible;
-
-  // Quantos cards cabem de uma vez. Precisa de medição porque a largura do card
-  // é um min() de CSS; o resto do carrossel continua sendo calc() puro.
+  // A trilha é recriada a cada aba (key), então a medição acompanha a aba.
   useEffect(() => {
-    const node = viewport.current;
+    const node = track.current;
     if (!node) return;
-
-    // Mede o card pelo próprio elemento: `getPropertyValue("--card-width")`
-    // devolveria a expressão `min(...)` crua, não o valor resolvido em pixels.
-    const update = () => {
-      const card = firstCard.current?.getBoundingClientRect().width;
-      if (!card) return;
-      setPerView(Math.max(1, Math.floor((node.clientWidth + GAP) / (card + GAP))));
-    };
-
+    const update = () => setHasOverflow(node.scrollWidth - node.clientWidth > 2);
     update();
     const observer = new ResizeObserver(update);
     observer.observe(node);
-    if (firstCard.current) observer.observe(firstCard.current);
     return () => observer.disconnect();
-  }, []);
+  }, [specialty]);
 
   // O relógio do autoplay só corre com a seção na tela: sem isso o ciclo começa
   // no carregamento e o visitante chega no meio de uma transição.
@@ -212,99 +194,62 @@ export function Team() {
     const node = section.current;
     if (!node) return;
     const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
-      threshold: 0.2,
+      threshold: 0.3,
     });
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    // Sem laço não há para onde andar; durante a troca de aba o avanço
-    // atropelaria a animação de entrada.
-    if (!hasOverflow || reducedMotion || !inView || dragging || focusWithin || phase !== "idle") {
-      return;
-    }
+    if (!hasOverflow || reducedMotion || !inView || focusWithin) return;
     const id = setInterval(() => {
-      setAnimate(true);
-      setIndex((current) => current + 1);
+      const node = track.current;
+      // Quem acabou de mexer no carrossel está lendo: o autoplay espera um pouco.
+      if (!node || Date.now() - lastInteraction.current < RESUME_AFTER_MS) return;
+      advance(node, 1, "smooth");
     }, AUTOPLAY_MS);
     return () => clearInterval(id);
-  }, [hasOverflow, reducedMotion, inView, dragging, focusWithin, phase]);
+  }, [hasOverflow, reducedMotion, inView, focusWithin, specialty]);
 
-  // Reativa a animação no frame seguinte ao salto silencioso do laço.
-  useEffect(() => {
-    if (animate) return;
-    const frame = requestAnimationFrame(() => requestAnimationFrame(() => setAnimate(true)));
-    return () => cancelAnimationFrame(frame);
-  }, [animate]);
+  useEffect(() => () => cancelAnimationFrame(scrollFrame.current), []);
 
-  useEffect(() => {
-    if (phase !== "leaving") return;
-    const id = setTimeout(() => {
-      const next = pending.current;
-      pending.current = null;
-      if (next) {
-        setSpecialty(next);
-        setIndex(0);
-        setAnimate(true);
-      }
-      setPhase("entering");
-    }, LEAVE_MS);
-    return () => clearTimeout(id);
-  }, [phase]);
+  function markInteraction() {
+    lastInteraction.current = Date.now();
+  }
 
-  useEffect(() => {
-    if (phase !== "entering") return;
-    // Dois frames: o primeiro pinta os cards deslocados e invisíveis, o segundo
-    // dispara a transição a partir desse estado.
-    const frame = requestAnimationFrame(() => requestAnimationFrame(() => setPhase("idle")));
-    return () => cancelAnimationFrame(frame);
-  }, [phase]);
-
-  function handleTrackTransitionEnd(event: React.TransitionEvent<HTMLUListElement>) {
-    // transitionend borbulha: só o transform da própria trilha fecha o ciclo.
-    if (event.target !== event.currentTarget || event.propertyName !== "transform") return;
-    if (!hasOverflow) return;
-
-    if (index >= visible.length) {
-      setAnimate(false);
-      setIndex(index - visible.length);
-    } else if (index < 0) {
-      setAnimate(false);
-      setIndex(index + visible.length);
-    }
+  // Um cálculo por frame no máximo, e o estado só muda quando o card da borda muda.
+  function handleScroll() {
+    if (scrollFrame.current) return;
+    scrollFrame.current = requestAnimationFrame(() => {
+      scrollFrame.current = 0;
+      const node = track.current;
+      if (!node) return;
+      const atEnd = node.scrollLeft >= node.scrollWidth - node.clientWidth - 2;
+      setActive(atEnd ? visible.length - 1 : Math.round(node.scrollLeft / stepOf(node)));
+    });
   }
 
   function step(direction: 1 | -1) {
-    setAnimate(true);
-    setIndex((current) => current + direction);
+    const node = track.current;
+    if (!node) return;
+    markInteraction();
+    advance(node, direction, reducedMotion ? "auto" : "smooth");
   }
 
   function selectSpecialty(next: TeamSpecialty) {
-    // Clique na aba já ativa não faz nada; clique durante a transição é
-    // ignorado, senão o ciclo de fases se sobrepõe e trava num estado invisível.
-    if (next === specialty || phase !== "idle") return;
-
-    if (reducedMotion) {
-      setSpecialty(next);
-      setIndex(0);
-      setAnimate(true);
-      return;
-    }
-
-    pending.current = next;
-    setPhase("leaving");
+    if (next === specialty) return;
+    setSpecialty(next);
+    setActive(0);
   }
 
   function handleTabKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+    const delta = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
     const jump = event.key === "Home" ? 0 : event.key === "End" ? specialties.length - 1 : null;
-    if (!step && jump === null) return;
+    if (!delta && jump === null) return;
 
     event.preventDefault();
     const current = specialties.indexOf(specialty);
-    const target =
-      jump ?? (current + step + specialties.length) % specialties.length;
+    const target = jump ?? (current + delta + specialties.length) % specialties.length;
 
     selectSpecialty(specialties[target]);
     // O foco acompanha a seleção: é o comportamento esperado de uma tablist
@@ -313,58 +258,11 @@ export function Team() {
     tabs[target]?.focus();
   }
 
-  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    if (!hasOverflow) return;
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    dragStart.current = event.clientX;
-    dragged.current = false;
-    setDragging(true);
-  }
-
-  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragStart.current === null) return;
-    const delta = event.clientX - dragStart.current;
-    if (Math.abs(delta) > 8) dragged.current = true;
-    setAnimate(false);
-    setDrag(delta);
-  }
-
-  function handlePointerUp() {
-    if (dragStart.current === null) return;
-    const threshold = Math.max(40, (viewport.current?.clientWidth ?? 1) * 0.12);
-
-    setAnimate(true);
-    if (drag <= -threshold) setIndex(index + 1);
-    else if (drag >= threshold) setIndex(index - 1);
-
-    dragStart.current = null;
-    setDrag(0);
-    setDragging(false);
-  }
-
-  const stageStyle: Record<"idle" | "leaving" | "entering", React.CSSProperties> = {
-    idle: {
-      opacity: 1,
-      transform: "translateX(0)",
-      transition: reducedMotion
-        ? undefined
-        : `opacity ${ENTER_MS}ms ease-out, transform ${ENTER_MS}ms ${SLIDE_EASING}`,
-    },
-    leaving: {
-      opacity: 0,
-      transform: `translateX(-${SHIFT})`,
-      transition: `opacity ${LEAVE_MS}ms ease-in, transform ${LEAVE_MS}ms ease-in`,
-    },
-    entering: { opacity: 0, transform: `translateX(${SHIFT})` },
-  };
-
-  const tablistId = "equipe-especialidades";
-
   return (
     <section
       ref={section}
       id="equipe"
-      className="scroll-mt-20 bg-white pt-16 pb-16 sm:pt-[88px] sm:pb-24"
+      className="scroll-mt-20 bg-white pt-16 pb-10 sm:pt-[88px] sm:pb-14"
     >
       <div className="mx-auto max-w-6xl px-6">
         <header className="max-w-3xl">
@@ -374,14 +272,14 @@ export function Team() {
         </header>
 
         {/* Abas à esquerda e setas à direita, na mesma linha. No celular as abas
-            rolam na horizontal e as setas somem — lá o gesto é o arraste. */}
+            rolam na horizontal de borda a borda e as setas somem — lá o gesto é o
+            arraste, e os pontos abaixo dos cards mostram onde se está. */}
         <div className="mt-8 flex items-center gap-4">
           <div
-            id={tablistId}
             role="tablist"
             aria-label="Especialidades da equipe"
             onKeyDown={handleTabKeyDown}
-            className="flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="-mx-6 flex min-w-0 flex-1 gap-2 overflow-x-auto px-6 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden"
           >
             {specialties.map((item) => {
               const isActive = item === specialty;
@@ -411,84 +309,59 @@ export function Team() {
           </div>
 
           {hasOverflow ? (
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="hidden shrink-0 items-center gap-2 sm:flex">
               <Arrow direction="prev" onClick={() => step(-1)} />
               <Arrow direction="next" onClick={() => step(1)} />
             </div>
           ) : null}
         </div>
 
-        {/* A altura do carrossel vem do `min-h` dos cards (abaixo), não daqui:
-            assim a linha nunca encolhe ao trocar de aba — que é o que
-            deslocaria a página — e ainda cresce se um nome mais longo pedir,
-            em vez de cortar o texto. */}
+        {/* A trilha vaza até a borda da tela (-mx-6) e devolve o recuo como padding:
+            no celular o próximo card aparece cortado na lateral, o sinal de que dá
+            para arrastar. */}
         <div
-          ref={viewport}
           id="equipe-carrossel"
           role="tabpanel"
           aria-labelledby={`tab-${specialty}`}
-          tabIndex={0}
-          style={{ ["--card-width" as string]: CARD_WIDTH }}
-          // A máscara é o "fade nas bordas": os cards somem gradualmente nas
-          // laterais em vez de serem cortados em linha reta, o que deixa claro
-          // que a fita continua para os dois lados. O prefixo -webkit é para o
-          // Safari, que ainda não aceita `mask-image` sem ele.
-          className={`mt-8 touch-pan-y overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-text focus-visible:ring-offset-4 ${
-            // Só mascara quando há fita para os lados. Com tudo cabendo na tela o
-            // degradê não teria nada para desvanecer e comeria a primeira letra
-            // do nome do card encostado na borda esquerda.
-            hasOverflow
-              ? "[-webkit-mask-image:linear-gradient(to_right,transparent_0,black_24px,black_calc(100%-24px),transparent_100%)] [mask-image:linear-gradient(to_right,transparent_0,black_24px,black_calc(100%-24px),transparent_100%)] sm:[-webkit-mask-image:linear-gradient(to_right,transparent_0,black_56px,black_calc(100%-56px),transparent_100%)] sm:[mask-image:linear-gradient(to_right,transparent_0,black_56px,black_calc(100%-56px),transparent_100%)]"
-              : ""
-          }`}
+          className="-mx-6 mt-6 sm:mx-0"
           onFocusCapture={() => setFocusWithin(true)}
           onBlurCapture={() => setFocusWithin(false)}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerUp}
-          onPointerLeave={handlePointerUp}
-          // Impede que o fim de um arraste vire clique no botão de agendamento.
-          onClickCapture={(event) => {
-            if (dragged.current) {
-              event.preventDefault();
-              event.stopPropagation();
-            }
-          }}
         >
-          <div style={stageStyle[phase]}>
-            <ul
-              className={`flex items-stretch ${hasOverflow ? "cursor-grab active:cursor-grabbing" : ""}`}
-              style={{
-                gap: `${GAP}px`,
-                transform: `translateX(calc(${-index} * (var(--card-width) + ${GAP}px) + ${drag}px))`,
-                transition:
-                  !animate || dragging || reducedMotion
-                    ? undefined
-                    : `transform 450ms ${SLIDE_EASING}`,
-              }}
-              onTransitionEnd={handleTrackTransitionEnd}
-            >
-              {slides.map((member, position) => (
-                <li
-                  key={`${position}-${member.name}`}
-                  ref={position === 0 ? firstCard : undefined}
-                  // Card fora da janela sai da ordem de tabulação: sem isso o
-                  // Tab levaria o foco para um card invisível e a viewport
-                  // rolaria sozinha.
-                  inert={position < index || position >= index + perView}
-                  // 29rem cobre o card mais alto (o nome de duas linhas, medido
-                  // em 435px) com uma folga pequena; `items-stretch` iguala
-                  // todos os cards da linha a essa altura.
-                  className="min-h-[29rem] shrink-0"
-                  style={{ width: "var(--card-width)" }}
-                >
-                  <MemberCard member={member} />
-                </li>
-              ))}
-            </ul>
-          </div>
+          <ul
+            // Trocar a aba recria a lista: ela volta ao primeiro card e entra animada.
+            key={specialty}
+            ref={track}
+            onScroll={handleScroll}
+            onPointerDown={markInteraction}
+            onWheel={markInteraction}
+            onTouchStart={markInteraction}
+            className="team-enter flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto overscroll-x-contain scroll-px-6 px-6 py-2 [scrollbar-width:none] sm:scroll-px-0 sm:gap-6 sm:px-0 [&::-webkit-scrollbar]:hidden"
+          >
+            {visible.map((member) => (
+              <li
+                key={member.name}
+                // 29rem cobre o card mais alto (nome em duas linhas) com folga: a
+                // linha não encolhe ao trocar de aba, o que deslocaria a página.
+                className="min-h-[29rem] w-[78%] max-w-[340px] shrink-0 snap-start sm:w-[340px] lg:w-[calc((100%-3rem)/3)] lg:max-w-none"
+              >
+                <MemberCard member={member} />
+              </li>
+            ))}
+          </ul>
         </div>
+
+        {hasOverflow ? (
+          <div aria-hidden="true" className="mt-4 flex justify-center gap-1.5 sm:hidden">
+            {visible.map((member, position) => (
+              <span
+                key={member.name}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  position === active ? "w-5 bg-navy" : "w-1.5 bg-navy/20"
+                }`}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
     </section>
   );

@@ -2,8 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
-import { BRAIN_CONFIG, type ItemColumn } from "./brain/config";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import type { ProjectedPoint } from "./brain/BrainScene";
 import { CtaButton } from "./CtaButton";
 
@@ -11,46 +10,59 @@ import { CtaButton } from "./CtaButton";
 // o primeiro render da página não espera pelo 3D.
 const BrainScene = dynamic(() => import("./brain/BrainScene"), { ssr: false });
 
-const FALLBACK_IMAGE = "/images/especialidades/cerebro-3d.webp";
+const FALLBACK_IMAGE = "/images/especialidades/cerebro-3d-holograma.webp";
 
 // A ordem define a região acesa no cérebro (BRAIN_CONFIG.regions): frontal, parietal,
-// temporal e occipital. Os dois primeiros itens ficam à esquerda do cérebro, os outros à direita.
+// temporal e occipital.
 const areas: {
   title: string;
+  /** Linha curta da lista: o que a especialidade trata, para o paciente se achar pelo sintoma. */
+  topics: string;
   highlight: string;
   description: string;
+  cta: string;
 }[] = [
   {
     title: "Neurologia",
+    topics: "Enxaqueca, epilepsia, Parkinson, Alzheimer e AVC",
     highlight: "Entenda o que está acontecendo com seu corpo e volte a viver com mais segurança.",
     description:
       "Investigação e tratamento de dores de cabeça, enxaqueca, Parkinson, Alzheimer, epilepsia, AVC e outros sintomas neurológicos, com avaliação individualizada e acompanhamento especializado.",
+    cta: "Agendar consulta",
   },
   {
     title: "Neurocirurgia",
+    topics: "Tumores cerebrais, coluna e compressões nervosas",
     highlight: "Quando a cirurgia é necessária, precisão e experiência fazem diferença.",
     description:
       "Tratamento especializado de tumores cerebrais, doenças da coluna, compressões nervosas e outras condições neurocirúrgicas, sempre buscando a melhor estratégia para cada paciente.",
+    cta: "Agendar avaliação",
   },
   {
     title: "Neurorradiologia",
+    topics: "Aneurismas, angiografia e angioplastia de carótida",
     highlight: "Tratamentos modernos por cateter, com alta precisão e menor invasividade.",
     description:
       "Abordagem de aneurismas cerebrais, doenças vasculares, angioplastia de carótida, angiografia e outros procedimentos realizados pelos vasos sanguíneos.",
+    cta: "Agendar avaliação",
   },
   {
     title: "Neurointervenção",
+    topics: "AVC, aneurismas e vasos do cérebro, sem cortes",
     highlight: "Tratamento por dentro do vaso, sem cortes e com recuperação mais rápida.",
     description:
       "Procedimentos endovasculares guiados por imagem para AVC, aneurismas cerebrais e doenças dos vasos do cérebro e do pescoço, conduzidos por equipe com formação em neurorradiologia intervencionista.",
+    cta: "Agendar avaliação",
   },
 ];
 
+const tabId = (index: number) => `especialidade-${index}-aba`;
 const panelId = (index: number) => `especialidade-${index}`;
-const headerId = (index: number) => `especialidade-${index}-titulo`;
-// Curva das animações de abrir/fechar: a mesma desaceleração longa e macia do macOS/iOS.
-const EASE_APPLE = "ease-[cubic-bezier(0.32,0.72,0,1)]";
-const columnOf = (index: number): ItemColumn => (index < areas.length / 2 ? "left" : "right");
+const ordinal = (index: number) => String(index + 1).padStart(2, "0");
+
+/** Tempo que o mouse precisa parar sobre um item para selecioná-lo: passar por cima a
+ *  caminho de outro item não troca o painel. */
+const HOVER_INTENT_MS = 140;
 
 type SceneStatus = "waiting" | "loading" | "ready" | "failed";
 
@@ -75,13 +87,15 @@ function useMediaQuery(query: string) {
   return matches;
 }
 
+/**
+ * Especialidades: lista, cérebro e painel. Uma especialidade está sempre escolhida —
+ * a região dela fica acesa no cérebro e o painel mostra o que ela trata. No desktop a
+ * lista fica à esquerda, ligada ao cérebro por uma linha de sinal, e o painel à
+ * direita; no celular o cérebro vem primeiro, a lista vira uma fileira de abas logo
+ * abaixo dele (o giro acontece à vista de quem tocou) e o painel fecha o bloco.
+ */
 export function Authority() {
-  // O hover (e o foco) só mostra a região no cérebro; o clique fixa e expande o card.
-  // O hover vence enquanto dura, o foco vem depois e o item fixado é o que sobra.
-  const [hovered, setHovered] = useState<number | null>(null);
-  const [focused, setFocused] = useState<number | null>(null);
-  const [pinned, setPinned] = useState<number | null>(null);
-  const [lingering, setLingering] = useState<number | null>(null);
+  const [selected, setSelected] = useState(0);
   const [status, setStatus] = useState<SceneStatus>("waiting");
   const [running, setRunning] = useState(false);
 
@@ -94,25 +108,10 @@ export function Authority() {
   const stage = useRef<HTMLDivElement>(null);
   const line = useRef<SVGSVGElement>(null);
   const linePath = useRef<SVGPathElement>(null);
-  const lineDot = useRef<SVGCircleElement>(null);
-  const buttons = useRef<(HTMLButtonElement | null)[]>([]);
-
-  const current = hovered ?? focused ?? pinned;
-
-  // Sem seleção, o destaque ainda fica alguns segundos antes de o cérebro voltar ao idle.
-  // A última seleção é guardada durante o render (padrão do React para estado derivado).
-  const [previous, setPrevious] = useState(current);
-  if (current !== previous) {
-    setPrevious(current);
-    if (current !== null) setLingering(current);
-  }
-  useEffect(() => {
-    if (current !== null) return;
-    const id = setTimeout(() => setLingering(null), BRAIN_CONFIG.select.idleReturnMs);
-    return () => clearTimeout(id);
-  }, [current]);
-
-  const active = current ?? lingering;
+  const lineStart = useRef<SVGCircleElement>(null);
+  const lineEnd = useRef<SVGCircleElement>(null);
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const hoverTimer = useRef(0);
 
   // Duas distâncias: carrega um pouco antes de a seção aparecer e renderiza só enquanto
   // ela está na tela.
@@ -136,201 +135,70 @@ export function Authority() {
     };
   }, []);
 
-  // Card aberto flutua por cima do vizinho: clicar fora dele ou apertar Esc fecha, para
-  // nenhum painel ficar "preso" cobrindo o card de baixo.
-  useEffect(() => {
-    if (pinned === null) return;
-    const open = pinned;
-    const handlePointer = (event: PointerEvent) => {
-      const card = buttons.current[open]?.closest("li");
-      if (card && !card.contains(event.target as Node)) setPinned(null);
-    };
-    const handleKey = (event: globalThis.KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      setPinned(null);
-      buttons.current[open]?.focus();
-    };
-    document.addEventListener("pointerdown", handlePointer);
-    document.addEventListener("keydown", handleKey);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointer);
-      document.removeEventListener("keydown", handleKey);
-    };
-  }, [pinned]);
-
-  // Espaço no fim da seção (desktop): só o que o card aberto mais alto precisa para não
-  // passar do cérebro, mais um respiro de lg:pb-6. Medido de verdade, porque a altura dos
-  // painéis muda com a largura da tela (texto quebra em mais ou menos linhas).
-  const [panelRoom, setPanelRoom] = useState(0);
-  useEffect(() => {
-    const grid = layout.current;
-    const stageEl = stage.current;
-    if (!grid || !stageEl || !isDesktop) return;
-    const measure = () => {
-      const stageBottom = stageEl.getBoundingClientRect().bottom;
-      let lowest = stageBottom;
-      grid.querySelectorAll("li").forEach((item) => {
-        const content = item.querySelector<HTMLElement>("[data-panel-content]");
-        const top = item.getBoundingClientRect().top;
-        // cabeçalho + conteúdo (altura natural, mesmo com o card fechado) + bordas
-        lowest = Math.max(lowest, top + item.offsetHeight + (content?.offsetHeight ?? 0) + 2);
-      });
-      setPanelRoom(Math.ceil(lowest - stageBottom));
-    };
-    // Os painéis são absolutos e não mudam o tamanho da grade: além do resize, mede de
-    // novo quando a fonte termina de carregar (ela muda a quebra de linha).
-    const observer = new ResizeObserver(measure);
-    observer.observe(grid);
-    document.fonts?.ready.then(measure);
-    return () => observer.disconnect();
-  }, [isDesktop]);
+  useEffect(() => () => window.clearTimeout(hoverTimer.current), []);
 
   const handleReady = useCallback(() => setStatus("ready"), []);
   const handleError = useCallback(() => setStatus("failed"), []);
 
   // Chamado a cada frame pela cena: escreve direto no SVG, sem re-render do React.
   const handleProject = useCallback(
-    (point: ProjectedPoint | null) => {
+    (point: ProjectedPoint) => {
       const svg = line.current;
       const path = linePath.current;
-      const dot = lineDot.current;
+      const start = lineStart.current;
+      const end = lineEnd.current;
       const box = layout.current?.getBoundingClientRect();
       const stageBox = stage.current?.getBoundingClientRect();
-      const button = active === null ? null : buttons.current[active];
-      if (!svg || !path || !dot || !box || !stageBox || !button || !point || !isDesktop) {
+      const tab = tabs.current[selected];
+      if (!svg || !path || !start || !end || !box || !stageBox || !tab || !isDesktop) {
         svg?.setAttribute("data-visible", "false");
         return;
       }
 
-      const buttonBox = button.getBoundingClientRect();
-      const fromLeft = columnOf(active!) === "left";
-      const sx = (fromLeft ? buttonBox.right : buttonBox.left) - box.left;
-      const sy = buttonBox.top + buttonBox.height / 2 - box.top;
+      const tabBox = tab.getBoundingClientRect();
+      const sx = tabBox.right - box.left;
+      const sy = tabBox.top + tabBox.height / 2 - box.top;
       const ex = stageBox.left + point.x - box.left;
       const ey = stageBox.top + point.y - box.top;
       const bend = (ex - sx) * 0.5;
 
       path.setAttribute("d", `M ${sx} ${sy} C ${sx + bend} ${sy}, ${ex - bend} ${ey}, ${ex} ${ey}`);
-      dot.setAttribute("cx", String(ex));
-      dot.setAttribute("cy", String(ey));
+      start.setAttribute("cx", String(sx));
+      start.setAttribute("cy", String(sy));
+      end.setAttribute("cx", String(ex));
+      end.setAttribute("cy", String(ey));
       svg.setAttribute("data-visible", "true");
     },
-    [active, isDesktop],
+    [selected, isDesktop],
   );
 
-  function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+  function select(index: number) {
+    window.clearTimeout(hoverTimer.current);
+    setSelected(index);
+  }
+
+  // Só o mouse seleciona por cima; no toque o pointerenter viria junto com o clique.
+  function handlePointerEnter(event: PointerEvent<HTMLButtonElement>, index: number) {
+    if (event.pointerType !== "mouse") return;
+    window.clearTimeout(hoverTimer.current);
+    hoverTimer.current = window.setTimeout(() => setSelected(index), HOVER_INTENT_MS);
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const last = areas.length - 1;
     const next: Record<string, number> = {
-      ArrowDown: index === last ? 0 : index + 1,
-      ArrowRight: index === last ? 0 : index + 1,
-      ArrowUp: index === 0 ? last : index - 1,
-      ArrowLeft: index === 0 ? last : index - 1,
+      ArrowDown: selected === last ? 0 : selected + 1,
+      ArrowRight: selected === last ? 0 : selected + 1,
+      ArrowUp: selected === 0 ? last : selected - 1,
+      ArrowLeft: selected === 0 ? last : selected - 1,
       Home: 0,
       End: last,
     };
-    if (next[event.key] === undefined) return;
+    const target = next[event.key];
+    if (target === undefined) return;
     event.preventDefault();
-    buttons.current[next[event.key]]?.focus();
-  }
-
-  function renderItem(index: number) {
-    const area = areas[index];
-    const isActive = index === active;
-    const expanded = pinned === index;
-    const isLeft = columnOf(index) === "left";
-
-    return (
-      // Desktop: o <li> guarda só a altura do cabeçalho e o card é absoluto dentro dele.
-      // Aberto, o card cresce para baixo por cima do vizinho (painel flutuante): a seção
-      // não muda de altura. No mobile o card abre dentro da lista, normalmente.
-      <li key={area.title} className="relative lg:h-16">
-        <div
-          className={`overflow-hidden rounded-2xl border transition-[border-color,background-color,box-shadow] duration-500 lg:absolute lg:inset-x-0 lg:top-0 ${EASE_APPLE} ${
-            expanded
-              ? "z-30 border-cyan bg-navy shadow-[0_0_28px_-8px_var(--color-cyan)] lg:shadow-[0_24px_48px_-12px_var(--color-navy),0_0_28px_-8px_var(--color-cyan)]"
-              : isActive
-                ? "z-10 border-cyan bg-cyan/10 shadow-[0_0_28px_-8px_var(--color-cyan)]"
-                : "z-10 border-white/10 bg-white/5 hover:border-cyan/50 hover:bg-white/10"
-          }`}
-        >
-          <h3>
-            <button
-              ref={(el) => {
-                buttons.current[index] = el;
-              }}
-              id={headerId(index)}
-              type="button"
-              aria-expanded={expanded}
-              aria-controls={panelId(index)}
-              onClick={() => setPinned((p) => (p === index ? null : index))}
-              onMouseEnter={() => setHovered(index)}
-              onMouseLeave={() => setHovered(null)}
-              onFocus={() => setFocused(index)}
-              onBlur={() => setFocused(null)}
-              onKeyDown={(event) => handleKeyDown(event, index)}
-              className={`touch-manipulation flex min-h-16 w-full items-center gap-3 rounded-2xl px-4 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan sm:px-5 sm:py-4 ${
-                isLeft ? "lg:flex-row-reverse lg:text-right" : ""
-              }`}
-            >
-              <span
-                className={`flex-1 text-base font-bold transition-colors duration-300 sm:text-xl ${
-                  isActive || expanded ? "text-white" : "text-cyan-tint"
-                }`}
-              >
-                {area.title}
-              </span>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                className={`h-5 w-5 shrink-0 text-cyan transition-transform duration-500 ${EASE_APPLE} ${
-                  expanded ? "rotate-180" : ""
-                }`}
-              >
-                <path d="M6 9l6 6 6-6" />
-              </svg>
-            </button>
-          </h3>
-
-          {/* Expansão com grid-template-rows 0fr → 1fr: anima até a altura real do conteúdo,
-              sem medir nada em JS. O texto fica sempre no HTML (SEO); fechado, vira inert
-              para o "Saiba mais" não receber foco escondido. */}
-          <div
-            id={panelId(index)}
-            role="region"
-            aria-labelledby={headerId(index)}
-            inert={!expanded}
-            className={`grid transition-[grid-template-rows] duration-500 motion-reduce:transition-none ${EASE_APPLE} ${
-              expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-            }`}
-          >
-            <div className="min-h-0 overflow-hidden">
-              <div
-                data-panel-content
-                className={`px-4 pb-5 transition-[opacity,transform] duration-500 motion-reduce:transition-none sm:px-5 lg:max-h-[calc(100svh-14rem)] lg:overflow-y-auto ${EASE_APPLE} ${
-                  expanded ? "translate-y-0 opacity-100 delay-75" : "-translate-y-1.5 opacity-0"
-                }`}
-              >
-                <div className="mb-4 h-px bg-white/10" />
-                <p className="text-sm font-semibold text-cyan">{area.highlight}</p>
-                <p className="mt-2 text-sm leading-relaxed text-cyan-tint">{area.description}</p>
-                <CtaButton
-                  size="md"
-                  message={`Olá! Gostaria de saber mais sobre ${area.title} na Clínica Neuropleno.`}
-                  className="mt-4 !min-h-10 !px-5 !py-2 text-sm"
-                >
-                  Saiba mais
-                </CtaButton>
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-    );
+    select(target);
+    tabs.current[target]?.focus();
   }
 
   const showCanvas = status === "loading" || status === "ready";
@@ -339,66 +207,66 @@ export function Authority() {
     <section
       ref={section}
       id="especialidades"
-      className="relative scroll-mt-20 overflow-x-clip bg-navy-light py-16 text-white lg:pt-5 lg:pb-6"
+      className="relative scroll-mt-20 overflow-x-clip bg-navy py-16 text-white sm:py-20 lg:py-24"
     >
-      {/* Fundo: luz atrás do cérebro e feixes subindo de baixo, como um holograma. */}
+      {/* Fundo: luz teal atrás do cérebro e uma malha de pontos que some nas bordas. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 60% 55% at 50% 50%, color-mix(in srgb, var(--color-navy-light) 75%, var(--color-teal)) 0%, var(--color-navy-light) 75%)",
+            "radial-gradient(ellipse 55% 50% at 50% 58%, color-mix(in srgb, var(--color-teal) 28%, transparent) 0%, transparent 72%), linear-gradient(180deg, var(--color-navy) 0%, color-mix(in srgb, var(--color-navy) 80%, var(--color-navy-light)) 100%)",
         }}
       />
-      <div aria-hidden="true" className="brain-beams pointer-events-none absolute inset-0">
-        {[14, 27, 38, 46, 54, 62, 73, 86].map((left, i) => (
-          <span
-            key={left}
-            style={{
-              left: `${left}%`,
-              width: `${i % 3 === 0 ? 3 : i % 2 === 0 ? 1 : 2}px`,
-              animationDelay: `${-i * 1.7}s`,
-            }}
-          />
-        ))}
-      </div>
+      <div aria-hidden="true" className="specialty-backdrop pointer-events-none absolute inset-0" />
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-        {/* Mesmo cabeçalho do SectionHeading, com as cores invertidas para o fundo escuro. */}
-        <div className="mx-auto mb-10 max-w-2xl text-center lg:mb-0">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-cyan">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-cyan">
             Especialidades
           </p>
-          <h2 className="text-balance text-3xl font-bold text-white sm:text-4xl">
-            Cuidado neurológico completo, do diagnóstico ao tratamento
+          <h2 className="mt-3 text-balance text-3xl font-bold text-white sm:text-4xl">
+            Quatro especialidades integradas, do diagnóstico ao tratamento
           </h2>
+          <p className="mx-auto mt-4 max-w-xl text-pretty text-cyan-tint/75">
+            Escolha uma área para ver onde ela atua e o que tratamos.
+          </p>
         </div>
 
         <div
           ref={layout}
-          style={{ paddingBottom: isDesktop ? panelRoom : undefined }}
-          className="relative grid grid-cols-1 items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)] lg:gap-x-6"
+          className="relative mt-8 grid grid-cols-1 items-center gap-6 sm:mt-10 lg:mt-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.45fr)_minmax(0,0.95fr)] lg:gap-8"
         >
-          {/* Linha de conexão: só no desktop, onde lista e cérebro ficam lado a lado. */}
+          {/* Linha de sinal: só no desktop, onde lista e cérebro ficam lado a lado. */}
           <svg
             ref={line}
             aria-hidden="true"
             data-visible="false"
             className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full overflow-visible opacity-0 transition-opacity duration-500 data-[visible=true]:opacity-100 lg:block"
           >
-            <path ref={linePath} fill="none" stroke="var(--color-cyan)" strokeWidth={1.25} />
-            <circle ref={lineDot} r={4} fill="var(--color-cyan-tint)" />
+            <path
+              ref={linePath}
+              className="signal-line"
+              fill="none"
+              stroke="var(--color-cyan)"
+              strokeOpacity={0.75}
+              strokeWidth={1.5}
+              strokeLinecap="round"
+            />
+            <circle ref={lineStart} r={3} fill="var(--color-cyan)" />
+            <circle ref={lineEnd} r={5} fill="var(--color-cyan-tint)" className="drop-shadow-[0_0_6px_var(--color-cyan)]" />
           </svg>
 
           <div
             ref={stage}
-            className="relative mx-auto h-[45vh] w-full max-w-[560px] lg:col-start-2 lg:row-start-1 lg:aspect-square lg:h-auto lg:w-[min(100%,calc(100svh-16rem))]"
+            className="relative mx-auto aspect-square w-full max-w-[340px] sm:max-w-[400px] lg:col-start-2 lg:row-start-1 lg:max-w-[520px]"
           >
+            {/* Reserva enquanto o 3D carrega, e no lugar dele se o WebGL falhar. */}
             <Image
               src={FALLBACK_IMAGE}
               alt=""
               fill
-              sizes="(max-width: 1024px) 90vw, 560px"
+              sizes="(max-width: 1024px) 400px, 520px"
               className={`object-contain transition-opacity duration-700 ${
                 status === "ready" ? "opacity-0" : "opacity-100"
               }`}
@@ -410,8 +278,8 @@ export function Authority() {
                 }`}
               >
                 <BrainScene
-                  activeIndex={active}
-                  column={active === null ? null : columnOf(active)}
+                  activeIndex={selected}
+                  column={isDesktop ? "left" : null}
                   reducedMotion={reducedMotion}
                   running={running}
                   isMobile={isMobile}
@@ -423,18 +291,101 @@ export function Authority() {
             )}
           </div>
 
-          {/* No mobile os quatro cards ficam empilhados abaixo do cérebro; no desktop o
-              wrapper some (contents) e cada lista vai para um lado, alinhada ao topo do
-              cérebro. Todo card abre para baixo (como um menu), por cima do vizinho, e usa a
-              altura do cérebro mais o espaço medido em panelRoom — nunca sobe para perto do
-              título. Como o card aberto flutua, a altura das colunas nunca muda. */}
-          <div className="flex flex-col gap-3 lg:contents">
-            <ul className="flex flex-col gap-3 lg:col-start-1 lg:row-start-1 lg:gap-5 lg:self-start lg:pt-6">
-              {areas.map((_, index) => (columnOf(index) === "left" ? renderItem(index) : null))}
-            </ul>
-            <ul className="flex flex-col gap-3 lg:col-start-3 lg:row-start-1 lg:gap-5 lg:self-start lg:pt-6">
-              {areas.map((_, index) => (columnOf(index) === "right" ? renderItem(index) : null))}
-            </ul>
+          {/* Abas. Celular: fileira que rola de borda a borda, logo abaixo do cérebro.
+              Desktop: coluna à esquerda, com número, nome e o que a área trata. */}
+          <div
+            role="tablist"
+            aria-label="Especialidades"
+            aria-orientation={isDesktop ? "vertical" : "horizontal"}
+            onKeyDown={handleKeyDown}
+            onPointerLeave={() => window.clearTimeout(hoverTimer.current)}
+            className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:justify-center sm:px-6 lg:col-start-1 lg:row-start-1 lg:mx-0 lg:flex-col lg:gap-2 lg:overflow-visible lg:px-0 [&::-webkit-scrollbar]:hidden"
+          >
+            {areas.map((area, index) => {
+              const isActive = index === selected;
+
+              return (
+                <button
+                  key={area.title}
+                  ref={(el) => {
+                    tabs.current[index] = el;
+                  }}
+                  id={tabId(index)}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls={panelId(index)}
+                  tabIndex={isActive ? 0 : -1}
+                  onClick={() => select(index)}
+                  onPointerEnter={(event) => handlePointerEnter(event, index)}
+                  className={`group relative flex min-h-11 shrink-0 touch-manipulation items-center rounded-full border px-4 text-sm font-semibold transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-navy lg:w-full lg:flex-col lg:items-start lg:rounded-xl lg:border-transparent lg:py-4 lg:pl-6 lg:pr-4 lg:text-left ${
+                    isActive
+                      ? "border-cyan bg-cyan/15 text-white lg:bg-white/[0.06]"
+                      : "border-white/15 text-cyan-tint/80 hover:border-cyan/50 hover:text-white lg:hover:bg-white/[0.03]"
+                  }`}
+                >
+                  {/* Trilho à esquerda (desktop): aceso no item escolhido. */}
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-y-4 left-0 hidden w-0.5 rounded-full transition-colors duration-300 lg:block ${
+                      isActive ? "bg-cyan shadow-[0_0_10px_var(--color-cyan)]" : "bg-white/10"
+                    }`}
+                  />
+                  <span
+                    aria-hidden="true"
+                    className={`hidden font-mono text-xs tracking-[0.2em] lg:block ${
+                      isActive ? "text-cyan" : "text-cyan/60"
+                    }`}
+                  >
+                    {ordinal(index)}
+                  </span>
+                  <span className="lg:mt-1 lg:text-xl lg:font-bold">{area.title}</span>
+                  <span
+                    className={`hidden text-sm font-normal leading-snug transition-colors duration-300 lg:mt-1 lg:block ${
+                      isActive ? "text-cyan-tint/85" : "text-cyan-tint/55"
+                    }`}
+                  >
+                    {area.topics}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Painéis empilhados na mesma célula da grade: a altura é a do maior, então
+              trocar de especialidade não empurra a página. Os ocultos ficam no HTML
+              (SEO) com visibility hidden, fora do foco e do leitor de tela. */}
+          <div className="grid lg:col-start-3 lg:row-start-1">
+            {areas.map((area, index) => {
+              const isActive = index === selected;
+
+              return (
+                <div
+                  key={area.title}
+                  id={panelId(index)}
+                  role="tabpanel"
+                  aria-labelledby={tabId(index)}
+                  className={`[grid-area:1/1] rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm transition-[opacity,transform,visibility] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none sm:p-7 ${
+                    isActive ? "visible translate-y-0 opacity-100" : "invisible translate-y-2 opacity-0"
+                  }`}
+                >
+                  <p className="font-mono text-xs tracking-[0.2em] text-cyan/80">
+                    {ordinal(index)} / {ordinal(areas.length - 1)}
+                  </p>
+                  <h3 className="mt-2 text-2xl font-bold text-white">{area.title}</h3>
+                  <p className="mt-3 font-medium leading-snug text-cyan">{area.highlight}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-cyan-tint/80">{area.description}</p>
+                  <CtaButton
+                    size="md"
+                    variant="accent"
+                    message={`Olá! Gostaria de saber mais sobre ${area.title} na Clínica Neuropleno.`}
+                    className="mt-6 w-full sm:w-auto"
+                  >
+                    {area.cta}
+                  </CtaButton>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

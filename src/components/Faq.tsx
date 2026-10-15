@@ -17,38 +17,43 @@ function FaqItem({
 }) {
   const panelId = useId();
 
+  // Lista com divisórias em vez de blocos coloridos: seis faixas ciano cheias pareciam
+  // seis botões gritando ao mesmo tempo. A cor fica para o sinal de abrir/fechar.
   return (
-    <div className="overflow-hidden rounded-[10px] transition-colors duration-[400ms]">
+    <div className="border-b border-slate-200">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={panelId}
-        className={`flex min-h-[48px] w-full items-center justify-between gap-4 rounded-[10px] px-6 py-4 text-left transition-colors duration-[400ms] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 ${
-          isOpen ? "bg-navy text-cyan-tint" : "bg-cyan text-navy hover:bg-teal"
-        }`}
+        className="group flex min-h-16 w-full items-center justify-between gap-4 rounded-md py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-text focus-visible:ring-offset-2"
       >
-        <span className="font-semibold">{question}</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          aria-hidden="true"
-          className={`h-5 w-5 shrink-0 transition-transform duration-[400ms] ${isOpen ? "rotate-180" : ""}`}
+        <span
+          className={`text-base font-semibold transition-colors sm:text-lg ${
+            isOpen ? "text-teal-text" : "text-navy group-hover:text-teal-text"
+          }`}
         >
-          <path
-            fillRule="evenodd"
-            d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.168l3.71-3.938a.75.75 0 1 1 1.08 1.04l-4.25 4.5a.75.75 0 0 1-1.08 0l-4.25-4.5a.75.75 0 0 1 .02-1.06Z"
-            clipRule="evenodd"
-          />
-        </svg>
+          {question}
+        </span>
+        <span
+          aria-hidden="true"
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-[transform,background-color,border-color,color] duration-[400ms] ${
+            isOpen
+              ? "rotate-45 border-teal-text bg-teal-text text-white"
+              : "border-slate-300 text-navy group-hover:border-teal-text group-hover:text-teal-text"
+          }`}
+        >
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
+            <path strokeLinecap="round" d="M10 4v12M4 10h12" />
+          </svg>
+        </span>
       </button>
       <div
         className="grid transition-[grid-template-rows] duration-[400ms] ease-in-out"
         style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
       >
         <div className="overflow-hidden">
-          <p id={panelId} className="px-6 pb-5 pt-4 text-slate-600">
+          <p id={panelId} className="pb-6 pr-12 text-slate-600">
             {answer}
           </p>
         </div>
@@ -65,7 +70,7 @@ export function Faq() {
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <SectionHeading eyebrow="Dúvidas" title="Perguntas frequentes" />
 
-        <div className="space-y-3">
+        <div className="border-t border-slate-200">
           {faq.map((item, index) => (
             <FaqItem
               key={item.question}

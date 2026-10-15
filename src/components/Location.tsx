@@ -32,7 +32,7 @@ export function Location() {
                   href={whatsappLink()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-sm text-sm font-semibold text-teal hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+                  className="inline-flex items-center gap-2 rounded-sm text-sm font-semibold text-teal-text hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
                 >
                   <WhatsAppIcon className="h-5 w-5 shrink-0 text-[#25D366]" />
                   <span>{site.whatsappDisplay}</span>
@@ -44,7 +44,7 @@ export function Location() {
                   href={site.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-sm text-sm font-semibold text-teal hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+                  className="inline-flex items-center gap-2 rounded-sm text-sm font-semibold text-teal-text hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
                 >
                   <InstagramIcon className="h-5 w-5 shrink-0 text-[#E1306C]" />
                   <span>{site.instagramHandle}</span>

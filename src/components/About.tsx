@@ -19,7 +19,7 @@ export function About() {
         />
 
         <div>
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-teal">
+          <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-teal-text">
             Sobre a clínica
           </p>
           <h2 className="text-balance text-3xl font-bold text-navy sm:text-4xl">

@@ -63,35 +63,65 @@ html {
   }
 }
 
-/* Seção Especialidades: feixes de luz em cyan subindo de baixo, atrás do cérebro 3D.
-   Ficam entre 10% e 15% de opacidade e só "respiram" — nada que chame atenção. */
-.brain-beams span {
-  position: absolute;
-  bottom: 0;
-  height: 75%;
-  border-radius: 9999px;
-  background: linear-gradient(to top, var(--color-cyan), transparent);
-  filter: blur(1px);
-  opacity: 0.12;
-  animation: brain-beam 8s ease-in-out infinite;
+/* Seção Especialidades: malha de pontos bem apagada, mais forte no centro e sumindo
+   nas bordas. Dá a textura de "tela de exame" sem competir com o cérebro. */
+.specialty-backdrop {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-cyan) 22%, transparent) 1px,
+    transparent 1.5px
+  );
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 65% 60% at 50% 55%, black 0%, transparent 75%);
+  mask-image: radial-gradient(ellipse 65% 60% at 50% 55%, black 0%, transparent 75%);
 }
 
-@keyframes brain-beam {
-  0%,
-  100% {
-    opacity: 0.1;
-    transform: scaleY(0.85);
-    transform-origin: bottom;
+/* Linha que liga a especialidade ao cérebro: o tracejado corre em direção ao cérebro,
+   como um sinal passando pelo nervo. */
+.signal-line {
+  stroke-dasharray: 3 7;
+  animation: signal-flow 1.2s linear infinite;
+}
+
+@keyframes signal-flow {
+  to {
+    stroke-dashoffset: -20;
   }
-  50% {
-    opacity: 0.15;
-    transform: scaleY(1);
-    transform-origin: bottom;
+}
+
+/* Troca de aba na equipe: os cards novos entram com um deslize curto. */
+@keyframes team-enter {
+  from {
+    opacity: 0;
+    transform: translateX(1.5rem);
   }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.team-enter {
+  animation: team-enter 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Galeria da Estrutura: a foto ampliada aparece com um fade curto. */
+@keyframes lightbox-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lightbox-enter[open] {
+  animation: lightbox-enter 0.2s ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .brain-beams span {
+  .signal-line,
+  .team-enter,
+  .lightbox-enter[open] {
     animation: none;
   }
 }

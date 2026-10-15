@@ -72,7 +72,7 @@ export async function InstagramFeed() {
             href={site.instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-teal px-8 py-3 font-semibold text-white shadow-md transition-colors hover:bg-navy-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-teal-text px-8 py-3 font-semibold text-white shadow-md transition-colors hover:bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
           >
             <InstagramIcon className="h-5 w-5" />
             Seguir {site.instagramHandle}

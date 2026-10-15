@@ -3,7 +3,8 @@ import { whatsappLink } from "@/data/content";
 
 type CtaButtonProps = {
   children: React.ReactNode;
-  variant?: "primary" | "secondary";
+  /** primary: fundo claro · secondary: faixa colorida · accent: fundo escuro (navy). */
+  variant?: "primary" | "secondary" | "accent";
   size?: "md" | "lg";
   message?: string;
   className?: string;
@@ -14,9 +15,12 @@ const sizeClasses: Record<NonNullable<CtaButtonProps["size"]>, string> = {
   lg: "px-8 py-4 text-lg",
 };
 
+// O primary usa o teal escuro (--color-teal-text): branco sobre o #219ebc da marca
+// fica em 3,26:1, abaixo dos 4,5:1 da WCAG AA para texto de botão.
 const variantClasses: Record<NonNullable<CtaButtonProps["variant"]>, string> = {
-  primary: "bg-teal text-white hover:bg-navy-light",
+  primary: "bg-teal-text text-white hover:bg-navy",
   secondary: "bg-white text-navy hover:bg-cyan-tint",
+  accent: "bg-cyan text-navy hover:bg-cyan-tint focus-visible:ring-offset-navy",
 };
 
 export function CtaButton({

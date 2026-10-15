@@ -371,20 +371,36 @@ export type FacilityImage = {
   src: string;
   /** Descreve o ambiente específico — o alt genérico se repetia em todas as fotos. */
   alt: string;
+  /** Nome curto do ambiente, mostrado sobre a foto na galeria da Estrutura. */
+  label?: string;
 };
+
+/** Texto da seção Estrutura. Não reaproveitar o facilityText: ele já aparece na seção
+ *  Sobre, e o mesmo parágrafo duas vezes na página soa como enchimento. */
+export const facilityDescription =
+  "Da recepção à sala de procedimentos, ambientes pensados para o seu conforto no Centro Médico San Vitta, no Ininga.";
 
 // Só o espaço físico entra aqui: fachada, recepção, espera, salas. Foto com pessoa
 // em primeiro plano é conteúdo da Equipe/Sobre, não da Estrutura — facility-4, 5 e 6
 // são os médicos em procedimento e por isso ficam fora desta lista.
+// A ordem desenha o mosaico (Facility.tsx): a 1ª foto é a grande e a 4ª a larga.
 export const facilityImages: FacilityImage[] = [
-  { src: "/images/estrutura/fachada.jpg", alt: "Fachada da Clínica Neuropleno" },
-  { src: "/images/estrutura/recepcao.jpg", alt: "Recepção da Clínica Neuropleno" },
-  { src: "/images/estrutura/recepcao-2.jpg", alt: "Balcão de recepção e área de espera da Clínica Neuropleno" },
-  { src: "/images/estrutura/sala-de-espera.jpg", alt: "Sala de espera da Clínica Neuropleno" },
-  { src: "/images/estrutura/lounge.jpg", alt: "Lounge de espera da Clínica Neuropleno" },
-  { src: "/images/estrutura/consultorio.jpg", alt: "Consultório médico da Clínica Neuropleno" },
-  { src: "/images/estrutura/consultorio-2.jpg", alt: "Consultório médico da Clínica Neuropleno" },
-  { src: "/images/estrutura/sala-de-procedimentos.jpg", alt: "Sala de procedimentos da Clínica Neuropleno" },
+  { src: "/images/estrutura/fachada.jpg", alt: "Fachada da Clínica Neuropleno", label: "Fachada" },
+  { src: "/images/estrutura/recepcao.jpg", alt: "Recepção da Clínica Neuropleno", label: "Recepção" },
+  {
+    src: "/images/estrutura/recepcao-2.jpg",
+    alt: "Balcão de recepção e área de espera da Clínica Neuropleno",
+    label: "Recepção e espera",
+  },
+  { src: "/images/estrutura/sala-de-espera.jpg", alt: "Sala de espera da Clínica Neuropleno", label: "Sala de espera" },
+  { src: "/images/estrutura/lounge.jpg", alt: "Lounge de espera da Clínica Neuropleno", label: "Lounge" },
+  { src: "/images/estrutura/consultorio.jpg", alt: "Consultório médico da Clínica Neuropleno", label: "Consultório" },
+  { src: "/images/estrutura/consultorio-2.jpg", alt: "Consultório médico da Clínica Neuropleno", label: "Consultório" },
+  {
+    src: "/images/estrutura/sala-de-procedimentos.jpg",
+    alt: "Sala de procedimentos da Clínica Neuropleno",
+    label: "Sala de procedimentos",
+  },
 ];
 
 // Carrossel da seção Sobre: só o espaço da clínica, sem pessoas em primeiro plano.

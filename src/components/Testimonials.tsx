@@ -91,7 +91,7 @@ export function Testimonials() {
             href={googleBusiness.writeReviewUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-teal px-8 py-3 font-semibold text-white shadow-md transition-colors hover:bg-navy-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
+            className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-teal-text px-8 py-3 font-semibold text-white shadow-md transition-colors hover:bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2"
           >
             Avaliar no Google
           </a>
