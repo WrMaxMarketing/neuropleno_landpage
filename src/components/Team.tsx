@@ -368,11 +368,8 @@ export function Team() {
     >
       <div className="mx-auto max-w-6xl px-6">
         <header className="max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.12em] text-teal-text">
+          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-teal-text">
             Conheça nossa equipe
-          </p>
-          <h2 className="mt-2 text-balance text-3xl font-bold text-navy sm:text-4xl">
-            Especialistas em neurologia, neurocirurgia e neurorradiologia
           </h2>
         </header>
 
