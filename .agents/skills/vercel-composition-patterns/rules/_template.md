@@ -21,4 +21,4 @@ Brief explanation of the rule and why it matters.
 // Good code example
 ```
 
-Reference: [Link](neuropleno.com.br.)
+Reference: [Link](https://example.com)
