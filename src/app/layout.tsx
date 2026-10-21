@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
+import MetaPixel from "../components/MetaPixel";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,7 +14,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const title = "Clínica Neuropleno | Neurologia, Neurocirurgia e Neurorradiologia em Teresina";
+const title =
+  "Clínica Neuropleno | Neurologia, Neurocirurgia e Neurorradiologia em Teresina";
 const description =
   "Referência nacional em neurologia, neurocirurgia e neurorradiologia intervencionista. Diagnóstico e tratamento clínico, cirúrgico e endovascular das principais condições neurológicas em Teresina - PI.";
 
@@ -78,6 +80,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <MetaPixel />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-navy focus:px-4 focus:py-2 focus:text-white"
