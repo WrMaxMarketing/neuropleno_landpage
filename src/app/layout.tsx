@@ -4,6 +4,7 @@ import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 import MetaPixel from "../components/MetaPixel";
 import GoogleTag from "../components/GoogleTag";
+import RastreioGoogleAds from "../components/RastreioGoogleAds";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -83,6 +84,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <MetaPixel />
         <GoogleTag />
+        <RastreioGoogleAds site="NP" />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-navy focus:px-4 focus:py-2 focus:text-white"
