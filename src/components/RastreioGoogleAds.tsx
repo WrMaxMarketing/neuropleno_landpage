@@ -12,6 +12,8 @@ export default function RastreioGoogleAds({ site }: { site: string }) {
       if (params.has("gclid") || params.get("utm_source") === "google") {
         const rede = params.get("rede") === "d" ? "D" : "P";
         localStorage.setItem(CHAVE, JSON.stringify({ rede, ts: Date.now() }));
+        // vale o último anúncio clicado
+        localStorage.removeItem("origem_meta_ads");
       }
     } catch {}
 
